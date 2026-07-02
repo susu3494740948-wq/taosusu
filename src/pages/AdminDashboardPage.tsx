@@ -46,7 +46,12 @@ const decisionStyles = {
   Stop: 'bg-red-100 text-red-800',
 }
 
-export function AdminDashboardPage() {
+interface AdminDashboardPageProps {
+  onNavigateUpload: () => void
+  catalogCount: number
+}
+
+export function AdminDashboardPage({ onNavigateUpload, catalogCount }: AdminDashboardPageProps) {
   const summary = buildOperationsSummary(products)
   const sortedProducts = [...products].sort((a, b) => b.reviewCount - a.reviewCount)
 
@@ -60,9 +65,17 @@ export function AdminDashboardPage() {
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm text-stone-300">
           <span className="rounded-full bg-white/10 px-4 py-2">市场：美国</span>
+          <span className="rounded-full bg-white/10 px-4 py-2">在售 SKU：{catalogCount}</span>
           <span className="rounded-full bg-white/10 px-4 py-2">测试周期：{trafficFunnel.period}</span>
           <span className="rounded-full bg-white/10 px-4 py-2">客服：{storeConfig.supportEmail}</span>
         </div>
+        <button
+          type="button"
+          onClick={onNavigateUpload}
+          className="mt-8 rounded-full bg-emerald-400 px-6 py-3 text-sm font-black text-stone-950 transition hover:bg-emerald-300"
+        >
+          上传新商品 →
+        </button>
       </section>
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

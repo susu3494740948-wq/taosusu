@@ -51,11 +51,13 @@ export const heroImageUrl = asset('images/hero.jpg')
 
 export const defaultProductPhoto = productPhotoUrls.cooling
 
-export function getProductPhotoUrl(imageKey: string): string {
+export function getProductPhotoUrl(imageKey: string, customImageUrl?: string): string {
+  if (customImageUrl) return customImageUrl
   return productPhotoUrls[imageKey as ProductImageKey] ?? defaultProductPhoto
 }
 
-export function getProductGalleryPhotoUrls(imageKey: string): string[] {
+export function getProductGalleryPhotoUrls(imageKey: string, customImageUrl?: string): string[] {
+  if (customImageUrl) return [customImageUrl]
   return productGalleryPhotos[imageKey as ProductImageKey] ?? [getProductPhotoUrl(imageKey)]
 }
 

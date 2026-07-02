@@ -8,6 +8,7 @@ describe('ProductDetailPage', () => {
     render(
       <ProductDetailPage
         product={products[0]}
+        customProducts={[]}
         onBack={vi.fn()}
         onNavigateHome={vi.fn()}
         onBrowseCategory={vi.fn()}

@@ -24,6 +24,8 @@ export interface Product {
   description: string
   details: string[]
   shippingNote: string
+  /** Data URL or remote URL for user-uploaded product photos */
+  customImageUrl?: string
 }
 
 export interface CartItem {

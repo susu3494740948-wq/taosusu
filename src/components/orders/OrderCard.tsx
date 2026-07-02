@@ -47,7 +47,11 @@ export function OrderCard({ order, onPay, onCancel, onSelectProduct }: OrderCard
               onClick={() => onSelectProduct?.(item.product.id)}
               className="w-28 shrink-0 overflow-hidden rounded-2xl sm:w-full"
             >
-              <ProductArtwork image={item.product.image} name={item.product.name} />
+              <ProductArtwork
+                image={item.product.image}
+                name={item.product.name}
+                customImageUrl={item.product.customImageUrl}
+              />
             </button>
           ))}
         </div>

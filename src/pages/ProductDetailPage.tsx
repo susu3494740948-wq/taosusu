@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ProductCard } from '../components/product/ProductCard'
 import { ProductMediaGallery } from '../components/product/ProductMediaGallery'
 import { ProductReviewsSection } from '../components/product/ProductReviewsSection'
-import { getRelatedProducts } from '../data/products'
+import { getCatalogRelatedProducts } from '../lib/catalog'
 import { storeConfig } from '../data/store'
 import { formatCurrency } from '../lib/formatters'
 import { theme } from '../lib/themeClasses'
@@ -11,6 +11,7 @@ import type { Category, Product } from '../types'
 
 interface ProductDetailPageProps {
   product: Product
+  customProducts: Product[]
   onBack: () => void
   onNavigateHome: () => void
   onBrowseCategory: (category: Category) => void
@@ -20,13 +21,14 @@ interface ProductDetailPageProps {
 
 export function ProductDetailPage({
   product,
+  customProducts,
   onBack,
   onNavigateHome,
   onBrowseCategory,
   onSelectProduct,
   onAddToCart,
 }: ProductDetailPageProps) {
-  const relatedProducts = getRelatedProducts(product)
+  const relatedProducts = getCatalogRelatedProducts(product, customProducts)
   const showCompareAtPrice = usePreferencesStore((state) => state.showCompareAtPrice)
   const showReviewStars = usePreferencesStore((state) => state.showReviewStars)
   const currencyFormat = usePreferencesStore((state) => state.currencyFormat)

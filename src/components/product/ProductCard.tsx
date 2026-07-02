@@ -28,7 +28,12 @@ export function ProductCard({ product, onSelect, onAddToCart, showImageOverlay =
       } ${reducedMotion ? '' : 'transition hover:-translate-y-1 hover:border-[var(--accent)]'}`}
     >
       <button type="button" className="block w-full text-left" onClick={() => onSelect(product.id)}>
-        <ProductArtwork image={product.image} name={product.name} showOverlay={showImageOverlay} />
+        <ProductArtwork
+          image={product.image}
+          name={product.name}
+          customImageUrl={product.customImageUrl}
+          showOverlay={showImageOverlay}
+        />
         <div className={`px-2 pb-2 ${compactCatalog ? 'pt-2' : 'pt-4'}`}>
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {product.badge ? (

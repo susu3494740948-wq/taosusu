@@ -36,17 +36,19 @@ const artworkClasses: Record<string, string> = {
 export function ProductArtwork({
   image,
   name,
+  customImageUrl,
   showOverlay = false,
   showBottomCaption = false,
   subtitle,
 }: {
   image: string
   name: string
+  customImageUrl?: string
   showOverlay?: boolean
   showBottomCaption?: boolean
   subtitle?: string
 }) {
-  const photoUrl = getProductPhotoUrl(image)
+  const photoUrl = getProductPhotoUrl(image, customImageUrl)
 
   return (
     <div

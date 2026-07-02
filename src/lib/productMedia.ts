@@ -74,8 +74,8 @@ function buildSizeChartDataUrl(product: Product): string {
 }
 
 export function getProductMedia(product: Product): ProductMediaSlide[] {
-  const mainPhoto = getProductPhotoUrl(product.image)
-  const gallery = getProductGalleryPhotoUrls(product.image)
+  const mainPhoto = getProductPhotoUrl(product.image, product.customImageUrl)
+  const gallery = getProductGalleryPhotoUrls(product.image, product.customImageUrl)
   const slides: ProductMediaSlide[] = [
     {
       id: `${product.id}-main`,

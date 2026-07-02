@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CartDrawer } from './components/cart/CartDrawer'
 import { Header } from './components/layout/Header'
 import { MobileBottomNav } from './components/layout/MobileBottomNav'
-import { products, getProductById } from './data/products'
+import { products as baseProducts } from './data/products'
 import { usePreferencesEffect } from './hooks/usePreferencesEffect'
+import { mergeCatalogProducts, getCatalogProductById } from './lib/catalog'
 import { theme } from './lib/themeClasses'
 import { enrichPlacedOrder } from './lib/orderLogistics'
 import { useCartStore } from './store/cartStore'
 import { useOrderStore } from './store/orderStore'
 import { usePreferencesStore } from './store/preferencesStore'
+import { useProductStore } from './store/productStore'
 import type { Category, Order, Product } from './types'
 import { AdminDashboardPage } from './pages/AdminDashboardPage'
 import { CategoryPage } from './pages/CategoryPage'
@@ -18,9 +20,10 @@ import { HomePage } from './pages/HomePage'
 import { OrderSuccessPage } from './pages/OrderSuccessPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { UploadProductPage } from './pages/UploadProductPage'
 import { UserAccountPage } from './pages/UserAccountPage'
 
-type Page = 'home' | 'categories' | 'detail' | 'checkout' | 'success' | 'admin' | 'reviews' | 'settings' | 'account'
+type Page = 'home' | 'categories' | 'detail' | 'checkout' | 'success' | 'admin' | 'upload' | 'reviews' | 'settings' | 'account'
 
 export default function App() {
   const addItem = useCartStore((state) => state.addItem)
@@ -30,16 +33,23 @@ export default function App() {
   const addToCartBehavior = usePreferencesStore((state) => state.addToCartBehavior)
   const autoApplySavedPromo = usePreferencesStore((state) => state.autoApplySavedPromo)
   const savedPromoCode = usePreferencesStore((state) => state.savedPromoCode)
+  const customProducts = useProductStore((state) => state.customProducts)
+  const catalogProducts = useMemo(
+    () => mergeCatalogProducts(customProducts),
+    [customProducts],
+  )
   const [page, setPage] = useState<Page>('home')
-  const [selectedProductId, setSelectedProductId] = useState(products[0].id)
+  const [selectedProductId, setSelectedProductId] = useState(baseProducts[0].id)
   const [cartOpen, setCartOpen] = useState(false)
   const [lastOrder, setLastOrder] = useState<Order | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [shopCategory, setShopCategory] = useState<Category | null>(null)
   const [detailReturnPage, setDetailReturnPage] = useState<'home' | 'categories' | 'reviews'>('home')
 
-  const selectedProduct = getProductById(selectedProductId) ?? products[0]
-  const showSearch = page !== 'admin' && page !== 'reviews' && page !== 'settings' && page !== 'account'
+  const selectedProduct =
+    getCatalogProductById(selectedProductId, customProducts) ?? catalogProducts[0] ?? baseProducts[0]
+  const showSearch =
+    page !== 'admin' && page !== 'upload' && page !== 'reviews' && page !== 'settings' && page !== 'account'
   const showMobileNav = page !== 'checkout' && page !== 'success'
 
   usePreferencesEffect()
@@ -97,7 +107,7 @@ export default function App() {
     if (page === 'categories') {
       return (
         <CategoryPage
-          products={products}
+          products={catalogProducts}
           selectedCategory={shopCategory}
           searchQuery={searchQuery}
           onBrowseCategory={browseCategory}
@@ -112,6 +122,7 @@ export default function App() {
       return (
         <ProductDetailPage
           product={selectedProduct}
+          customProducts={customProducts}
           onBack={() => navigate(detailReturnPage)}
           onNavigateHome={() => navigate('home')}
           onBrowseCategory={browseCategory}
@@ -132,7 +143,17 @@ export default function App() {
         />
       )
     }
-    if (page === 'admin') return <AdminDashboardPage />
+    if (page === 'admin') {
+      return <AdminDashboardPage onNavigateUpload={() => navigate('upload')} catalogCount={catalogProducts.length} />
+    }
+    if (page === 'upload') {
+      return (
+        <UploadProductPage
+          onNavigateAdmin={() => navigate('admin')}
+          onViewProduct={selectProduct}
+        />
+      )
+    }
     if (page === 'reviews') {
       return <RecentReviewsPage onViewProduct={selectProduct} />
     }
@@ -143,7 +164,7 @@ export default function App() {
 
     return (
       <HomePage
-        products={products}
+        products={catalogProducts}
         onNavigateCategories={() => navigate('categories')}
         onSelectProduct={selectProduct}
         onAddToCart={addProductToCart}
@@ -156,7 +177,7 @@ export default function App() {
       <Header
         currentPage={page}
         showSearch={showSearch}
-        products={products}
+        products={catalogProducts}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onSearchSubmit={submitSearch}
