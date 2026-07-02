@@ -1,0 +1,7 @@
+sku,role,recommended_price_usd,estimated_cogs_usd,platform_payment_rate,platform_payment_fee_usd,affiliate_rate,affiliate_fee_usd,fulfillment_fee_usd,return_reserve_rate,return_reserve_usd,contribution_usd,contribution_margin,recommended_initial_units,estimated_inventory_cost_usd,decision
+"Cooling towel 4-pack with pouch","Summer traffic/bundle",19.99,3.80,10.3%,2.06,10%,2.00,3.20,5%,1.00,7.93,39.7%,150,570.00,"Scale first"
+"Reusable pet hair remover","Pet content hero",19.99,3.20,10.3%,2.06,16%,3.20,3.20,7%,1.40,6.93,34.7%,150,480.00,"Scale if Pet Supplies qualification passes"
+"Compression packing cubes set","Travel/back-to-school",29.99,7.00,10.3%,3.09,12%,3.60,4.50,8%,2.40,9.40,31.3%,120,840.00,"Test if zipper/material quality is strong"
+"Heatless satin/silk curl set","Beauty content",19.99,3.50,10.3%,2.06,20%,4.00,3.10,6%,1.20,6.13,30.7%,150,525.00,"Scale if Beauty category qualification is available"
+"USB-C bladeless neck fan","Seasonal hero candidate",29.99,8.50,10.3%,3.09,12%,3.60,4.20,8%,2.40,8.20,27.3%,120,1020.00,"Only buy after MSDS/SDS UN38.3 COC safety marks"
+"Clear acrylic vanity drawer organizer","Home organization",27.99,6.50,10.3%,2.88,12%,3.36,5.80,10%,2.80,6.65,23.8%,80,520.00,"Low priority unless packaging and fulfillment improve"

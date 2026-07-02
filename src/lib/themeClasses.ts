@@ -1,0 +1,20 @@
+/** Shared theme-aware Tailwind class groups backed by CSS variables in index.css */
+export const theme = {
+  page: 'theme-page min-h-dvh',
+  surface: 'theme-surface border theme-border',
+  surfaceMuted: 'theme-surface-muted',
+  heading: 'theme-heading',
+  muted: 'theme-muted',
+  border: 'theme-border border',
+  hero: 'theme-hero text-white',
+  heroAccent: 'theme-hero-accent',
+  primaryBtn: 'theme-primary-btn font-bold transition hover:opacity-90',
+  secondaryBtn: 'theme-secondary-btn font-bold transition',
+  navActive: 'theme-nav-active font-bold',
+  navIdle: 'theme-nav-idle font-bold transition',
+  accentSoft: 'theme-accent-soft',
+  accentText: 'theme-accent-text',
+  promoBanner: 'theme-promo-banner',
+  input: 'theme-input w-full outline-none',
+  footerPanel: 'theme-footer-panel text-white',
+} as const

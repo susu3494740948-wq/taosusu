@@ -1,0 +1,33 @@
+import { useCallback, useState } from 'react'
+import { STORAGE_PREFIX } from '../lib/constants'
+
+export function useLocalStorage<T>(key: string, initialValue: T) {
+  const storageKey = `${STORAGE_PREFIX}${key}`
+
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined') return initialValue
+    try {
+      const item = window.localStorage.getItem(storageKey)
+      return item ? (JSON.parse(item) as T) : initialValue
+    } catch {
+      return initialValue
+    }
+  })
+
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      setStoredValue((prev) => {
+        const next = value instanceof Function ? value(prev) : value
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(next))
+        } catch {
+          /* quota exceeded */
+        }
+        return next
+      })
+    },
+    [storageKey],
+  )
+
+  return [storedValue, setValue] as const
+}

@@ -1,0 +1,6 @@
+date,channel,campaign,sku,creative_angle,spend_usd,impressions,clicks,ctr,cpc_usd,product_page_views,add_to_carts,add_to_cart_rate,checkout_starts,checkout_rate,purchases,purchase_rate,revenue_usd,aov_usd,estimated_cogs_usd,estimated_fulfillment_usd,estimated_payment_fee_usd,ad_cost_per_purchase_usd,estimated_contribution_usd,refunds,refund_reason,comments_signal,next_decision
+2026-07-01,TikTok organic,cooling_towel_mvp,Cooling towel 4-pack with pouch,wet_snap_demo,0,,,,,,,,,,,,,,,,,,,,,"",Track,Collect baseline
+2026-07-01,TikTok organic,pet_hair_remover_mvp,Reusable pet hair remover,sofa_before_after,0,,,,,,,,,,,,,,,,,,,,,"",Track,Collect baseline
+2026-07-01,TikTok organic,heatless_curl_mvp,Heatless satin curl set,overnight_result,0,,,,,,,,,,,,,,,,,,,,,"",Track,Collect baseline
+2026-07-02,Meta paid,cooling_towel_mvp,Cooling towel 4-pack with pouch,summer_go_bag,25,,,,,,,,,,,,,,,,,,,,,"",Pending,Run small-budget test
+2026-07-02,Meta paid,pet_hair_remover_mvp,Reusable pet hair remover,car_seat_cleanup,25,,,,,,,,,,,,,,,,,,,,,"",Pending,Run small-budget test
