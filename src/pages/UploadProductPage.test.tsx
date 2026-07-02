@@ -1,11 +1,15 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { useProductStore } from '../store/productStore'
 import { UploadProductPage } from './UploadProductPage'
 
+vi.mock('../lib/compressImage', () => ({
+  compressImageFile: vi.fn(async () => 'data:image/jpeg;base64,demo'),
+}))
+
 describe('UploadProductPage', () => {
-  it('renders upload form and publishes a custom product', () => {
-    useProductStore.setState({ customProducts: [] })
+  it('renders upload form and publishes a custom product', async () => {
+    useProductStore.setState({ customProducts: [], cloudLoaded: true, cloudSyncError: null })
 
     render(<UploadProductPage onNavigateAdmin={vi.fn()} onViewProduct={vi.fn()} />)
 
@@ -20,7 +24,9 @@ describe('UploadProductPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '发布商品' }))
 
-    expect(screen.getByText(/已上架，可在全站分类与搜索中找到/)).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText(/已上架/)).toBeInTheDocument()
+    })
     expect(useProductStore.getState().customProducts[0]?.name).toBe('Uploaded Demo Towel')
   })
 })

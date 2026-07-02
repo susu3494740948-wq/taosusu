@@ -10,6 +10,8 @@ import {
   validateProductForm,
   type ProductFormValues,
 } from '../lib/productForm'
+import { compressImageFile } from '../lib/compressImage'
+import { canSyncToCloud } from '../lib/cloudCatalog'
 import { theme } from '../lib/themeClasses'
 import { useProductStore } from '../store/productStore'
 import { usePreferencesStore } from '../store/preferencesStore'
@@ -24,6 +26,10 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   const customProducts = useProductStore((state) => state.customProducts)
   const addProduct = useProductStore((state) => state.addProduct)
   const removeProduct = useProductStore((state) => state.removeProduct)
+  const loadFromCloud = useProductStore((state) => state.loadFromCloud)
+  const cloudSyncError = useProductStore((state) => state.cloudSyncError)
+  const cloudLoaded = useProductStore((state) => state.cloudLoaded)
+  const githubSyncToken = usePreferencesStore((state) => state.githubSyncToken)
 
   const [values, setValues] = useState<ProductFormValues>(defaultProductFormValues)
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -31,6 +37,8 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   const [errors, setErrors] = useState<ReturnType<typeof validateProductForm>>({})
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isRefreshingCloud, setIsRefreshingCloud] = useState(false)
+  const cloudSyncEnabled = canSyncToCloud(githubSyncToken)
 
   const fieldClass = `mt-2 rounded-2xl px-4 py-3 ${theme.input}`
 
@@ -65,10 +73,14 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
 
     setIsSubmitting(true)
     try {
-      const customImageUrl = imageFile ? await readImageFileAsDataUrl(imageFile) : undefined
+      const customImageUrl = imageFile ? await compressImageFile(imageFile) : undefined
       const product = buildProductFromForm(values, customImageUrl)
-      addProduct(product)
-      setSuccessMessage(`「${product.name}」已上架，可在全站分类与搜索中找到。`)
+      await addProduct(product)
+      setSuccessMessage(
+        cloudSyncEnabled
+          ? `「${product.name}」已上架并同步到云端，所有访客可见。`
+          : `「${product.name}」已上架。请在设置中配置 GitHub Token 以同步给所有访客。`,
+      )
       setValues(defaultProductFormValues)
       setImageFile(null)
       setImagePreview(null)
@@ -85,8 +97,8 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Product Upload</p>
         <h2 className={theme.pageTitle}>上传商品</h2>
         <p className={theme.pageSubtitle}>
-          填写商品信息并上传图片，新商品会保存到本机浏览器并立即出现在 {storeConfig.name} 前台。
-          适合 demo 演示与运营同学快速补 SKU。
+          填写商品信息并上传图片。配置 GitHub Token 后，新商品会同步到云端 JSON，所有访客在
+          {storeConfig.name} 前台都能看到；未配置时仅保存在本机浏览器。
         </p>
         <button
           type="button"
@@ -102,6 +114,31 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
           <p className={`font-bold ${theme.accentText}`}>{successMessage}</p>
         </div>
       ) : null}
+
+      <section className={`mt-6 rounded-2xl border px-5 py-4 ${theme.surface} ${theme.border}`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className={`text-sm font-bold ${theme.heading}`}>云端同步</p>
+            <p className={`mt-1 text-sm ${theme.muted}`}>
+              {cloudSyncEnabled
+                ? '已启用：上传/删除会自动写入 GitHub 仓库。'
+                : '未配置 Token：商品仅在本机可见。请到「设置 → 结账」填写 GitHub Token。'}
+            </p>
+          </div>
+          <button
+            type="button"
+            disabled={isRefreshingCloud || !cloudLoaded}
+            onClick={() => {
+              setIsRefreshingCloud(true)
+              void loadFromCloud().finally(() => setIsRefreshingCloud(false))
+            }}
+            className={`rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn} border ${theme.border} disabled:opacity-50`}
+          >
+            {isRefreshingCloud ? '刷新中…' : '从云端刷新'}
+          </button>
+        </div>
+        {cloudSyncError ? <p className="mt-3 text-sm text-red-600">{cloudSyncError}</p> : null}
+      </section>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
         <section className={`rounded-[2rem] p-5 sm:p-8 ${theme.surface} ${theme.border} border`}>
@@ -362,7 +399,7 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
                   </button>
                   <button
                     type="button"
-                    onClick={() => removeProduct(product.id)}
+                    onClick={() => void removeProduct(product.id)}
                     className="rounded-full px-4 py-2 text-sm font-bold text-red-700 transition hover:bg-red-50"
                   >
                     删除

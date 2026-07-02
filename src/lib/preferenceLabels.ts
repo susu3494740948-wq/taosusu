@@ -37,5 +37,6 @@ export function buildPreferencesSummary(preferences: StorePreferences): string[]
     `排序 ${sortLabels[preferences.productSort]} · 加购 ${preferences.addToCartBehavior === 'open-drawer' ? '打开购物车' : '停留当前页'}`,
     `通知 订单${preferences.orderEmailUpdates ? '开' : '关'} · 营销${preferences.marketingEmails ? '开' : '关'} · 降价提醒${preferences.priceDropAlerts ? '开' : '关'}`,
     `隐私 浏览记录${preferences.saveBrowsingHistory ? '开' : '关'} · 个性化${preferences.personalizedRecommendations ? '开' : '关'}`,
+    `云端同步 ${preferences.githubSyncToken ? '已配置 Token' : '未配置 Token'}`,
   ]
 }

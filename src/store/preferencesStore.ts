@@ -41,6 +41,7 @@ export interface StorePreferences {
   analyticsCookies: boolean
   personalizedRecommendations: boolean
   rememberCheckoutInfo: boolean
+  githubSyncToken: string
 }
 
 interface PreferencesState extends StorePreferences {
@@ -76,6 +77,7 @@ export const defaultPreferences: StorePreferences = {
   analyticsCookies: false,
   personalizedRecommendations: true,
   rememberCheckoutInfo: true,
+  githubSyncToken: '',
 }
 
 function normalizePersistedPreferences(persisted: Partial<StorePreferences> & { accentColor?: string }) {

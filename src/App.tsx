@@ -55,6 +55,10 @@ export default function App() {
   usePreferencesEffect()
 
   useEffect(() => {
+    void useProductStore.getState().loadFromCloud()
+  }, [])
+
+  useEffect(() => {
     setShippingMethod(defaultShippingMethod)
   }, [defaultShippingMethod, setShippingMethod])
 

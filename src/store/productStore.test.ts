@@ -1,6 +1,11 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useProductStore } from './productStore'
 import type { Product } from '../types'
+
+vi.mock('../lib/cloudCatalog', () => ({
+  fetchCloudProducts: vi.fn(async () => []),
+  syncProductsToGitHub: vi.fn(async () => undefined),
+}))
 
 const sampleProduct: Product = {
   id: 'demo-upload-1',
@@ -21,14 +26,14 @@ const sampleProduct: Product = {
 
 describe('productStore', () => {
   beforeEach(() => {
-    useProductStore.setState({ customProducts: [] })
+    useProductStore.setState({ customProducts: [], cloudLoaded: false, cloudSyncError: null })
   })
 
-  it('adds and removes custom products', () => {
-    useProductStore.getState().addProduct(sampleProduct)
+  it('adds and removes custom products', async () => {
+    await useProductStore.getState().addProduct(sampleProduct)
     expect(useProductStore.getState().customProducts).toHaveLength(1)
 
-    useProductStore.getState().removeProduct(sampleProduct.id)
+    await useProductStore.getState().removeProduct(sampleProduct.id)
     expect(useProductStore.getState().customProducts).toHaveLength(0)
   })
 })
