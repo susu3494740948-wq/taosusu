@@ -32,7 +32,6 @@ export function Header({
     { label: 'Home', page: 'home' as const },
     { label: '商品分类', page: 'categories' as const },
     { label: '运营中心', page: 'admin' as const },
-    { label: '上传商品', page: 'upload' as const },
     { label: '刚收到评论', page: 'reviews' as const },
   ]
 
@@ -75,15 +74,6 @@ export function Header({
           </nav>
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-            <button
-              type="button"
-              onClick={() => onNavigate('upload')}
-              className={`hidden rounded-full px-3 py-2 text-sm sm:inline-flex md:px-4 md:py-3 ${
-                currentPage === 'upload' ? theme.navActive : `${theme.secondaryBtn} border ${theme.border}`
-              }`}
-            >
-              上传商品
-            </button>
             <button
               type="button"
               onClick={() => onNavigate('account')}

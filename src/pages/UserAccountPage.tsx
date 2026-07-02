@@ -37,38 +37,38 @@ export function UserAccountPage({ onNavigateShop, onSelectProduct }: UserAccount
   }, [allOrders, counts])
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className={`rounded-[2rem] p-6 sm:p-8 ${theme.hero}`}>
+    <main className={theme.pageMain}>
+      <div className={`${theme.pageHero} ${theme.hero}`}>
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>My Account</p>
-        <h2 className="mt-3 text-4xl font-black">我的订单</h2>
-        <p className="mt-4 max-w-3xl leading-7 opacity-80">
+        <h2 className={theme.pageTitle}>我的订单</h2>
+        <p className={theme.pageSubtitle}>
           在这里查看购买记录、待付款订单和跨境物流进度。如有问题请联系 {storeConfig.supportEmail}。
         </p>
       </div>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4 xl:grid-cols-4">
         {[
           ['全部订单', summary.totalOrders, '累计下单'],
           ['待付款', summary.unpaidCount, '需尽快完成支付'],
           ['运输中', summary.inTransitCount, '可查看物流轨迹'],
           ['已购金额', formatCurrency(summary.paidTotal, currencyFormat), '已付款订单合计'],
         ].map(([label, value, note]) => (
-          <div key={label} className={`rounded-3xl p-5 ${theme.surface} ${theme.border} border`}>
-            <p className={`text-sm font-bold ${theme.muted}`}>{label}</p>
-            <p className={`mt-2 text-3xl font-black ${theme.heading}`}>{value}</p>
+          <div key={label} className={`rounded-3xl p-4 sm:p-5 ${theme.surface} ${theme.border} border`}>
+            <p className={`text-xs font-bold sm:text-sm ${theme.muted}`}>{label}</p>
+            <p className={`mt-2 text-2xl font-black sm:text-3xl ${theme.heading}`}>{value}</p>
             <p className={`mt-2 text-sm ${theme.muted}`}>{note}</p>
           </div>
         ))}
       </section>
 
-      <section className="mt-8">
-        <div className="flex flex-wrap gap-2">
+      <section className="mt-6 sm:mt-8">
+        <div className="home-scroll-row flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
           {filters.map((filter) => (
             <button
               key={filter}
               type="button"
               onClick={() => setActiveFilter(filter)}
-              className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+              className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition sm:shrink ${
                 activeFilter === filter ? theme.navActive : `${theme.surfaceMuted} ${theme.muted}`
               }`}
             >

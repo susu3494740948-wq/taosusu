@@ -33,11 +33,11 @@ export function CategoryPage({
     .filter((product) => showOutOfStock || product.stock > 0)
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <section className={`rounded-[2rem] p-6 sm:p-10 ${theme.hero}`}>
+    <main className={theme.pageMain}>
+      <section className={`${theme.pageHero} ${theme.hero}`}>
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Categories</p>
-        <h2 className="mt-3 text-3xl font-black sm:text-4xl">商品分类</h2>
-        <p className="mt-4 max-w-3xl leading-7 opacity-80">
+        <h2 className={theme.pageTitle}>商品分类</h2>
+        <p className={theme.pageSubtitle}>
           按场景浏览淘酥酥跨境好物：夏日降温、宠物清洁、旅行收纳、美妆护理、家居整理与健身户外。
         </p>
         <button type="button" onClick={onNavigateHome} className={`mt-6 rounded-full px-6 py-3 text-sm ${theme.secondaryBtn}`}>
@@ -80,7 +80,7 @@ export function CategoryPage({
         </section>
       )}
 
-      <section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <section className="mt-8 grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
         {categories.map((category) => {
           const meta = categoryMeta[category]
           const categoryProducts = getProductsByCategory(category)

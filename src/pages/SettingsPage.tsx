@@ -153,22 +153,22 @@ export function SettingsPage() {
   const showCheckout = activeTab === 'all' || activeTab === 'checkout'
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <section className={`rounded-[2rem] p-8 sm:p-10 ${theme.hero}`}>
+    <main className={theme.pageMainNarrow}>
+      <section className={`${theme.pageHero} ${theme.hero}`}>
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Preferences</p>
-        <h2 className="mt-3 text-4xl font-black">{storeConfig.name} · 偏好设置</h2>
-        <p className="mt-4 max-w-3xl leading-7 opacity-80">
+        <h2 className={theme.pageTitle}>{storeConfig.name} · 偏好设置</h2>
+        <p className={theme.pageSubtitle}>
           自定义店铺主题、明暗模式、购物习惯与通知偏好。6 套主题即时切换，设置保存在本机浏览器。
         </p>
       </section>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="home-scroll-row mt-6 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition sm:shrink ${
               activeTab === tab.id ? theme.navActive : `${theme.surface} ${theme.border} border ${theme.muted}`
             }`}
           >

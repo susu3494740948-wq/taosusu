@@ -20,6 +20,7 @@ import {
 import { storeConfig } from '../data/store'
 import { formatCurrency } from '../lib/formatters'
 import { buildOperationsSummary, getSkuOperationalStatus } from '../lib/operationsMetrics'
+import { theme } from '../lib/themeClasses'
 
 const funnelSteps = [
   { step: 'Impressions', value: trafficFunnel.impressions },
@@ -56,11 +57,11 @@ export function AdminDashboardPage({ onNavigateUpload, catalogCount }: AdminDash
   const sortedProducts = [...products].sort((a, b) => b.reviewCount - a.reviewCount)
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <section className="rounded-[2rem] bg-stone-950 p-8 text-white sm:p-10">
+    <main className={theme.pageMain}>
+      <section className={`${theme.pageHero} bg-stone-950 p-6 text-white sm:p-10`}>
         <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-300">Operations Center</p>
-        <h2 className="mt-3 text-4xl font-black">{storeConfig.name} 运营中心</h2>
-        <p className="mt-4 max-w-3xl leading-7 text-stone-300">
+        <h2 className={`${theme.pageTitle} text-white`}>{storeConfig.name} 运营中心</h2>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 sm:text-base">
           汇总商品库存、14 天流量测试、SKU 信号、合规检查与 Go / Pivot / Stop 决策，帮助你在放量前先看清瓶颈。
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm text-stone-300">

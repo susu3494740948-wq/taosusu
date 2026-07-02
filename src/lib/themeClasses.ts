@@ -1,6 +1,11 @@
 /** Shared theme-aware Tailwind class groups backed by CSS variables in index.css */
 export const theme = {
   page: 'theme-page min-h-dvh mobile-shell overflow-x-hidden',
+  pageMain: 'mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8',
+  pageMainNarrow: 'mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8',
+  pageHero: 'rounded-[2rem] p-6 sm:p-8',
+  pageTitle: 'mt-3 text-3xl font-black sm:text-4xl',
+  pageSubtitle: 'mt-4 max-w-3xl text-sm leading-7 opacity-80 sm:text-base',
   surface: 'theme-surface border theme-border',
   surfaceMuted: 'theme-surface-muted',
   heading: 'theme-heading',

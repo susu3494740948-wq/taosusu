@@ -80,11 +80,11 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <section className={`rounded-[2rem] p-6 sm:p-8 ${theme.hero}`}>
+    <main className={theme.pageMainNarrow}>
+      <section className={`${theme.pageHero} ${theme.hero}`}>
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Product Upload</p>
-        <h2 className="mt-3 text-3xl font-black sm:text-4xl">上传商品</h2>
-        <p className="mt-4 max-w-2xl text-sm leading-7 opacity-85 sm:text-base">
+        <h2 className={theme.pageTitle}>上传商品</h2>
+        <p className={theme.pageSubtitle}>
           填写商品信息并上传图片，新商品会保存到本机浏览器并立即出现在 {storeConfig.name} 前台。
           适合 demo 演示与运营同学快速补 SKU。
         </p>
