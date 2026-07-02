@@ -33,6 +33,9 @@ describe('productStore', () => {
     await useProductStore.getState().addProduct(sampleProduct)
     expect(useProductStore.getState().customProducts).toHaveLength(1)
 
+    await useProductStore.getState().updateProduct({ ...sampleProduct, price: 21.99 })
+    expect(useProductStore.getState().customProducts[0]?.price).toBe(21.99)
+
     await useProductStore.getState().removeProduct(sampleProduct.id)
     expect(useProductStore.getState().customProducts).toHaveLength(0)
   })

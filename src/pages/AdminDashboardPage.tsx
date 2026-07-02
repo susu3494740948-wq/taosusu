@@ -81,7 +81,7 @@ export function AdminDashboardPage({
             onClick={onNavigateUpload}
             className="rounded-full bg-emerald-400 px-6 py-3 text-sm font-black text-stone-950 transition hover:bg-emerald-300"
           >
-            上传新商品 →
+            商品上架 →
           </button>
           <button
             type="button"

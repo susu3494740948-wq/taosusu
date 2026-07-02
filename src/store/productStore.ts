@@ -11,6 +11,7 @@ interface ProductState {
   setCustomProducts: (products: Product[]) => void
   loadFromCloud: () => Promise<void>
   addProduct: (product: Product) => Promise<void>
+  updateProduct: (product: Product) => Promise<void>
   removeProduct: (productId: string) => Promise<void>
 }
 
@@ -57,6 +58,15 @@ export const useProductStore = create<ProductState>()(
           product,
           ...get().customProducts.filter((item) => item.id !== product.id),
         ])
+        set({ customProducts })
+        const syncError = await pushToCloud(customProducts)
+        set({ cloudSyncError: syncError })
+      },
+
+      updateProduct: async (product) => {
+        const customProducts = sortProducts(
+          get().customProducts.map((item) => (item.id === product.id ? product : item)),
+        )
         set({ customProducts })
         const syncError = await pushToCloud(customProducts)
         set({ cloudSyncError: syncError })

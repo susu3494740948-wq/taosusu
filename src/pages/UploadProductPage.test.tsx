@@ -13,7 +13,7 @@ describe('UploadProductPage', () => {
 
     render(<UploadProductPage onNavigateAdmin={vi.fn()} onViewProduct={vi.fn()} />)
 
-    expect(screen.getByRole('heading', { name: '上传商品' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '商品上架' })).toBeInTheDocument()
 
     fireEvent.change(screen.getByLabelText(/商品名称/), { target: { value: 'Uploaded Demo Towel' } })
     fireEvent.change(screen.getByLabelText(/售价/), { target: { value: '18.99' } })
@@ -22,7 +22,7 @@ describe('UploadProductPage', () => {
     fireEvent.change(screen.getByLabelText(/核心卖点/), { target: { value: 'Fast cooling' } })
     fireEvent.change(screen.getByLabelText(/规格参数/), { target: { value: 'One size' } })
 
-    fireEvent.click(screen.getByRole('button', { name: '发布商品' }))
+    fireEvent.click(screen.getByRole('button', { name: '确认上架' }))
 
     await waitFor(() => {
       expect(screen.getByText(/已上架/)).toBeInTheDocument()

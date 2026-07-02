@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "portable-neck-fan-pro",
+    "name": "Portable Neck Fan Pro",
+    "category": "Summer Comfort",
+    "price": 24.99,
+    "compareAtPrice": 34.99,
+    "rating": 5,
+    "reviewCount": 12,
+    "stock": 48,
+    "badge": "New Arrival",
+    "image": "fan",
+    "tags": ["summer", "outdoor", "travel"],
+    "benefits": [
+      "Hands-free neck wear for commute and travel",
+      "USB-C rechargeable with 3 speed modes",
+      "Quiet bladeless airflow for gym and outdoor use"
+    ],
+    "description": "轻量挂脖风扇，适合通勤、旅行与户外运动，USB-C 快充，三档风力。",
+    "details": [
+      "Bladeless neck design",
+      "USB-C cable included",
+      "Adjustable airflow angles"
+    ],
+    "shippingNote": "Processing 2-5 business days. Estimated US delivery 7-15 business days after dispatch."
+  }
+]

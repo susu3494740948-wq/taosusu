@@ -1,11 +1,11 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { categories } from '../data/products'
 import { getProductPhotoUrl } from '../data/productPhotos'
-import { storeConfig } from '../data/store'
 import { formatCurrency } from '../lib/formatters'
 import {
   buildProductFromForm,
   defaultProductFormValues,
+  productToFormValues,
   readImageFileAsDataUrl,
   validateProductForm,
   type ProductFormValues,
@@ -15,6 +15,7 @@ import { canSyncToCloud } from '../lib/cloudCatalog'
 import { theme } from '../lib/themeClasses'
 import { useProductStore } from '../store/productStore'
 import { usePreferencesStore } from '../store/preferencesStore'
+import type { Product } from '../types'
 
 interface UploadProductPageProps {
   onNavigateAdmin: () => void
@@ -25,6 +26,7 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   const currencyFormat = usePreferencesStore((state) => state.currencyFormat)
   const customProducts = useProductStore((state) => state.customProducts)
   const addProduct = useProductStore((state) => state.addProduct)
+  const updateProduct = useProductStore((state) => state.updateProduct)
   const removeProduct = useProductStore((state) => state.removeProduct)
   const loadFromCloud = useProductStore((state) => state.loadFromCloud)
   const cloudSyncError = useProductStore((state) => state.cloudSyncError)
@@ -37,10 +39,31 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   const [errors, setErrors] = useState<ReturnType<typeof validateProductForm>>({})
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isRefreshingCloud, setIsRefreshingCloud] = useState(false)
   const cloudSyncEnabled = canSyncToCloud(githubSyncToken)
+  const isEditing = editingProduct !== null
 
   const fieldClass = `mt-2 rounded-2xl px-4 py-3 ${theme.input}`
+
+  function resetForm() {
+    setValues(defaultProductFormValues)
+    setImageFile(null)
+    setImagePreview(null)
+    setErrors({})
+    setSuccessMessage(null)
+    setEditingProduct(null)
+  }
+
+  function startEditing(product: Product) {
+    setEditingProduct(product)
+    setValues(productToFormValues(product))
+    setImageFile(null)
+    setImagePreview(product.customImageUrl ?? getProductPhotoUrl(product.image))
+    setErrors({})
+    setSuccessMessage(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const recentUploads = useMemo(() => customProducts.slice(0, 6), [customProducts])
 
@@ -74,16 +97,18 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
     setIsSubmitting(true)
     try {
       const customImageUrl = imageFile ? await compressImageFile(imageFile) : undefined
-      const product = buildProductFromForm(values, customImageUrl)
-      await addProduct(product)
+      const product = buildProductFromForm(values, customImageUrl, editingProduct ?? undefined)
+      if (isEditing) {
+        await updateProduct(product)
+      } else {
+        await addProduct(product)
+      }
       setSuccessMessage(
         cloudSyncEnabled
-          ? `「${product.name}」已上架并同步到云端，所有访客可见。`
-          : `「${product.name}」已上架。请在设置中配置 GitHub Token 以同步给所有访客。`,
+          ? `「${product.name}」已${isEditing ? '更新' : '上架'}并同步到云端，所有访客可见。`
+          : `「${product.name}」已${isEditing ? '更新' : '上架'}。请在设置中配置 GitHub Token 以同步给所有访客。`,
       )
-      setValues(defaultProductFormValues)
-      setImageFile(null)
-      setImagePreview(null)
+      resetForm()
     } catch {
       setErrors({ image: '图片上传失败，请重试' })
     } finally {
@@ -94,11 +119,10 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   return (
     <main className={theme.pageMainNarrow}>
       <section className={`${theme.pageHero} ${theme.hero}`}>
-        <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Product Upload</p>
-        <h2 className={theme.pageTitle}>上传商品</h2>
+        <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Product Listing</p>
+        <h2 className={theme.pageTitle}>商品上架</h2>
         <p className={theme.pageSubtitle}>
-          填写商品信息并上传图片。配置 GitHub Token 后，新商品会同步到云端 JSON，所有访客在
-          {storeConfig.name} 前台都能看到；未配置时仅保存在本机浏览器。
+          填写商品信息并确认上架。配置 GitHub Token 后，商品会同步到云端 JSON，本地开发与线上网站保持一致。
         </p>
         <button
           type="button"
@@ -141,6 +165,19 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
       </section>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
+        {isEditing ? (
+          <div className={`rounded-2xl border px-5 py-4 ${theme.accentSoft}`}>
+            <p className={`font-bold ${theme.accentText}`}>正在编辑：{editingProduct.name}</p>
+            <button
+              type="button"
+              onClick={resetForm}
+              className={`mt-3 text-sm font-bold ${theme.accentText}`}
+            >
+              取消编辑，改为上架新商品
+            </button>
+          </div>
+        ) : null}
+
         <section className={`rounded-[2rem] p-5 sm:p-8 ${theme.surface} ${theme.border} border`}>
           <h3 className={`text-xl font-black ${theme.heading}`}>基础信息</h3>
 
@@ -344,17 +381,11 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
             disabled={isSubmitting}
             className={`min-h-12 rounded-full px-8 py-3 ${theme.primaryBtn} disabled:opacity-50`}
           >
-            {isSubmitting ? '上传中…' : '发布商品'}
+            {isSubmitting ? '提交中…' : isEditing ? '保存修改' : '确认上架'}
           </button>
           <button
             type="button"
-            onClick={() => {
-              setValues(defaultProductFormValues)
-              setImageFile(null)
-              setImagePreview(null)
-              setErrors({})
-              setSuccessMessage(null)
-            }}
+            onClick={resetForm}
             className={`min-h-12 rounded-full px-8 py-3 ${theme.secondaryBtn} border ${theme.border}`}
           >
             清空表单
@@ -366,8 +397,8 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
         <section className="mt-12">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>Uploaded SKUs</p>
-              <h3 className={`mt-2 text-2xl font-black ${theme.heading}`}>已上传商品 ({customProducts.length})</h3>
+              <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>Listed SKUs</p>
+              <h3 className={`mt-2 text-2xl font-black ${theme.heading}`}>已上架商品 ({customProducts.length})</h3>
             </div>
           </div>
 
@@ -390,6 +421,13 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => startEditing(product)}
+                    className={`rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn} border ${theme.border}`}
+                  >
+                    编辑
+                  </button>
                   <button
                     type="button"
                     onClick={() => onViewProduct(product.id)}

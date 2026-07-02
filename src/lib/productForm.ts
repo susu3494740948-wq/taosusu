@@ -96,28 +96,46 @@ export function validateProductForm(values: ProductFormValues, imageFile?: File 
 export function buildProductFromForm(
   values: ProductFormValues,
   customImageUrl?: string,
+  existing?: Pick<Product, 'id' | 'rating' | 'reviewCount' | 'image' | 'customImageUrl'>,
 ): Product {
   const price = Number(values.price)
   const compareAtPrice = values.compareAtPrice.trim() ? Number(values.compareAtPrice) : undefined
   const stock = Number(values.stock)
+  const nextCustomImageUrl = customImageUrl ?? existing?.customImageUrl
 
   return {
-    id: createProductId(values.name),
+    id: existing?.id ?? createProductId(values.name),
     name: values.name.trim(),
     category: values.category,
     price,
     compareAtPrice,
-    rating: 5,
-    reviewCount: 0,
+    rating: existing?.rating ?? 5,
+    reviewCount: existing?.reviewCount ?? 0,
     stock,
     badge: values.badge.trim() || 'New Arrival',
-    image: 'custom',
-    customImageUrl,
+    image: nextCustomImageUrl ? 'custom' : existing?.image ?? 'custom',
+    customImageUrl: nextCustomImageUrl,
     tags: parseTags(values.tags),
     benefits: parseLines(values.benefits),
     description: values.description.trim(),
     details: parseLines(values.details),
     shippingNote: values.shippingNote.trim() || defaultProductFormValues.shippingNote,
+  }
+}
+
+export function productToFormValues(product: Product): ProductFormValues {
+  return {
+    name: product.name,
+    category: product.category,
+    price: String(product.price),
+    compareAtPrice: product.compareAtPrice ? String(product.compareAtPrice) : '',
+    stock: String(product.stock),
+    badge: product.badge ?? '',
+    description: product.description,
+    tags: product.tags.join(', '),
+    benefits: product.benefits.join('\n'),
+    details: product.details.join('\n'),
+    shippingNote: product.shippingNote,
   }
 }
 

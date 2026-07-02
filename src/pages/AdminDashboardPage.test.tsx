@@ -11,7 +11,7 @@ describe('AdminDashboardPage', () => {
     expect(screen.getByText('全店 SKU 运营表')).toBeInTheDocument()
     expect(screen.getByText(/Go \/ Pivot \/ Stop：Pivot/)).toBeInTheDocument()
     expect(screen.getByText('本周运营动作')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '上传新商品 →' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '商品上架 →' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '编辑站点内容 →' })).toBeInTheDocument()
   })
 })
