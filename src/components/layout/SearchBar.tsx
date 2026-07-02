@@ -98,7 +98,7 @@ export function SearchBar({
             aria-expanded={showSuggestions}
             aria-controls={listboxId}
             aria-autocomplete="list"
-            className={`min-w-0 flex-1 border-0 bg-transparent px-1 py-1.5 text-sm outline-none ${theme.heading}`}
+            className={`min-w-0 flex-1 border-0 bg-transparent px-1 py-2 text-base outline-none sm:py-1.5 sm:text-sm ${theme.heading}`}
           />
           {value ? (
             <button

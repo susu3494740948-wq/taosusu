@@ -1,6 +1,6 @@
 /** Shared theme-aware Tailwind class groups backed by CSS variables in index.css */
 export const theme = {
-  page: 'theme-page min-h-dvh',
+  page: 'theme-page min-h-dvh mobile-shell overflow-x-hidden',
   surface: 'theme-surface border theme-border',
   surfaceMuted: 'theme-surface-muted',
   heading: 'theme-heading',

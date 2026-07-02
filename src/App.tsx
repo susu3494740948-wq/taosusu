@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CartDrawer } from './components/cart/CartDrawer'
 import { Header } from './components/layout/Header'
+import { MobileBottomNav } from './components/layout/MobileBottomNav'
 import { products, getProductById } from './data/products'
 import { usePreferencesEffect } from './hooks/usePreferencesEffect'
 import { theme } from './lib/themeClasses'
@@ -39,6 +40,7 @@ export default function App() {
 
   const selectedProduct = getProductById(selectedProductId) ?? products[0]
   const showSearch = page !== 'admin' && page !== 'reviews' && page !== 'settings' && page !== 'account'
+  const showMobileNav = page !== 'checkout' && page !== 'success'
 
   usePreferencesEffect()
 
@@ -163,6 +165,13 @@ export default function App() {
         onOpenCart={() => setCartOpen(true)}
       />
       {renderPage()}
+      {showMobileNav ? (
+        <MobileBottomNav
+          currentPage={page}
+          onNavigate={(nextPage) => navigate(nextPage)}
+          onOpenCart={() => setCartOpen(true)}
+        />
+      ) : null}
       <CartDrawer
         open={cartOpen}
         onClose={() => setCartOpen(false)}

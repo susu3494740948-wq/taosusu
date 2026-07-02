@@ -422,6 +422,49 @@ body {
   @apply m-0 min-h-dvh antialiased;
   background: var(--page-bg);
   color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+.mobile-shell {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  .mobile-shell {
+    padding-bottom: 0;
+  }
+}
+
+.mobile-bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-sticky-bar {
+  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+  .mobile-sticky-bar {
+    padding-bottom: 0;
+  }
+}
+
+.home-scroll-row {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-scroll-row::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .home-scroll-row {
+    scroll-snap-type: none;
+  }
 }
 
 @keyframes fade-in {

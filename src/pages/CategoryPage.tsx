@@ -33,10 +33,10 @@ export function CategoryPage({
     .filter((product) => showOutOfStock || product.stock > 0)
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <section className={`rounded-[2rem] p-8 sm:p-10 ${theme.hero}`}>
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+      <section className={`rounded-[2rem] p-6 sm:p-10 ${theme.hero}`}>
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Categories</p>
-        <h2 className="mt-3 text-4xl font-black">商品分类</h2>
+        <h2 className="mt-3 text-3xl font-black sm:text-4xl">商品分类</h2>
         <p className="mt-4 max-w-3xl leading-7 opacity-80">
           按场景浏览淘酥酥跨境好物：夏日降温、宠物清洁、旅行收纳、美妆护理、家居整理与健身户外。
         </p>
@@ -65,7 +65,7 @@ export function CategoryPage({
           {filteredProducts.length === 0 ? (
             <p className={`mt-6 ${theme.muted}`}>没有找到匹配商品，请换个关键词或分类。</p>
           ) : (
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
               {filteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}

@@ -33,7 +33,10 @@ export function CartDrawer({ open, onClose, onCheckout }: CartDrawerProps) {
         aria-label="Close cart"
         onClick={onClose}
       />
-      <aside className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col p-6 shadow-2xl ${theme.surface}`}>
+      <aside
+        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col p-4 shadow-2xl sm:p-6 ${theme.surface}`}
+        style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+      >
         <div className={`flex items-center justify-between border-b pb-4 ${theme.border}`}>
           <div>
             <p className={`text-sm font-semibold uppercase tracking-[0.2em] ${theme.muted}`}>Cart</p>

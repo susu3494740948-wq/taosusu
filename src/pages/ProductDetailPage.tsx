@@ -44,8 +44,8 @@ export function ProductDetailPage({
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <nav aria-label="面包屑" className={`mb-6 flex flex-wrap items-center gap-2 text-sm ${theme.muted}`}>
+    <main className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pb-10 sm:pt-10 lg:px-8">
+      <nav aria-label="面包屑" className={`mb-4 flex flex-wrap items-center gap-2 text-xs sm:mb-6 sm:text-sm ${theme.muted}`}>
         <button type="button" onClick={onNavigateHome} className={`font-bold ${theme.accentText}`}>
           首页
         </button>
@@ -62,7 +62,7 @@ export function ProductDetailPage({
           {product.category}
         </button>
         <span>/</span>
-        <span className={theme.heading}>{product.name}</span>
+        <span className={`hidden max-w-[40%] truncate sm:inline ${theme.heading}`}>{product.name}</span>
       </nav>
 
       <button type="button" onClick={onBack} className={`mb-6 font-bold ${theme.accentText}`}>
@@ -98,7 +98,7 @@ export function ProductDetailPage({
             )}
           </div>
 
-          <h2 className={`text-4xl font-black tracking-tight ${theme.heading}`}>{product.name}</h2>
+          <h2 className={`text-2xl font-black tracking-tight sm:text-4xl ${theme.heading}`}>{product.name}</h2>
           <p className={`mt-4 text-lg leading-8 ${theme.muted}`}>{product.description}</p>
 
           {product.tags.length > 0 ? (
@@ -112,7 +112,7 @@ export function ProductDetailPage({
           ) : null}
 
           <div className="mt-6 flex items-end gap-3">
-            <span className={`text-4xl font-black ${theme.heading}`}>
+            <span className={`text-3xl font-black sm:text-4xl ${theme.heading}`}>
               {formatCurrency(product.price, currencyFormat)}
             </span>
             {showCompareAtPrice && product.compareAtPrice ? (
@@ -132,7 +132,7 @@ export function ProductDetailPage({
             )}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-8 hidden flex-wrap items-center gap-4 md:flex">
             <div className={`flex items-center gap-3 rounded-full px-2 py-2 ${theme.surfaceMuted}`}>
               <button
                 type="button"
@@ -200,7 +200,7 @@ export function ProductDetailPage({
       {relatedProducts.length > 0 && (
         <section className="mt-16">
           <h3 className={`text-2xl font-black ${theme.heading}`}>相关推荐</h3>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {relatedProducts.map((item) => (
               <ProductCard
                 key={item.id}
@@ -213,6 +213,49 @@ export function ProductDetailPage({
           </div>
         </section>
       )}
+      <div
+        className={`mobile-sticky-bar fixed inset-x-0 bottom-0 z-30 border-t md:hidden ${theme.surface} ${theme.border}`}
+      >
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
+          <div className="min-w-0 flex-1">
+            <p className={`truncate text-sm font-black ${theme.heading}`}>
+              {formatCurrency(product.price, currencyFormat)}
+            </p>
+            <p className={`truncate text-xs ${theme.muted}`}>
+              {isOutOfStock ? '暂时缺货' : `现货 ${product.stock} 件`}
+            </p>
+          </div>
+          <div className={`flex items-center gap-2 rounded-full px-1 py-1 ${theme.surfaceMuted}`}>
+            <button
+              type="button"
+              className="flex h-10 w-10 items-center justify-center rounded-full font-bold"
+              onClick={decreaseQuantity}
+              disabled={quantity <= 1}
+              aria-label="减少数量"
+            >
+              -
+            </button>
+            <span className={`w-6 text-center text-sm font-black ${theme.heading}`}>{quantity}</span>
+            <button
+              type="button"
+              className="flex h-10 w-10 items-center justify-center rounded-full font-bold"
+              onClick={increaseQuantity}
+              disabled={quantity >= product.stock}
+              aria-label="增加数量"
+            >
+              +
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={() => onAddToCart(product, quantity)}
+            disabled={isOutOfStock}
+            className={`min-h-11 shrink-0 rounded-full px-5 text-sm font-bold ${theme.primaryBtn} disabled:opacity-40`}
+          >
+            {isOutOfStock ? '缺货' : '加入购物车'}
+          </button>
+        </div>
+      </div>
     </main>
   )
 }

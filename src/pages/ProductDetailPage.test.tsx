@@ -20,7 +20,7 @@ describe('ProductDetailPage', () => {
     expect(screen.getByRole('button', { name: '查看主图' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '查看尺寸图' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: '买家怎么说' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: '加入购物车' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: '加入购物车' }).length).toBeGreaterThan(0)
     expect(screen.getByText('Perfect for theme parks')).toBeInTheDocument()
     expect(screen.getAllByText(/已验证购买/).length).toBeGreaterThan(0)
   })
