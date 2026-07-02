@@ -15,7 +15,7 @@ describe('ProductArtwork', () => {
 
     const image = screen.getByRole('img', { name: 'Cooling Towel 4-Pack product lifestyle photo' })
 
-    expect(image).toHaveAttribute('src', expect.stringContaining('images.pexels.com'))
+    expect(image).toHaveAttribute('src', expect.stringContaining('/images/products/cooling.jpg'))
     expect(screen.getByText('Cooling Towel 4-Pack')).toBeInTheDocument()
     expect(screen.getByText('Summer Comfort')).toBeInTheDocument()
   })

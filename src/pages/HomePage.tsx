@@ -1,6 +1,7 @@
 import { ProductCard } from '../components/product/ProductCard'
 import { ProductArtwork } from '../components/product/ProductArtwork'
 import { categories, getProductsByCategory } from '../data/products'
+import { heroImageUrl } from '../data/productPhotos'
 import { heroCategories, storeConfig, storeTrustPoints } from '../data/store'
 import { theme } from '../lib/themeClasses'
 import type { Product } from '../types'
@@ -19,7 +20,7 @@ export function HomePage({
   onAddToCart,
 }: HomePageProps) {
   const bestSellers = products.slice(0, 8)
-  const heroImage = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1400&q=80'
+  const heroImage = heroImageUrl
   const activityDeals = [
     {
       label: '满额免邮',
