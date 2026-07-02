@@ -3,9 +3,14 @@ import { ProductArtwork } from '../components/product/ProductArtwork'
 import { categoryMeta } from '../data/categoryMeta'
 import { categories, getProductsByCategory } from '../data/products'
 import { heroImageUrl } from '../data/productPhotos'
-import { storeConfig, storeTrustPoints } from '../data/store'
 import { formatCurrency } from '../lib/formatters'
 import { theme } from '../lib/themeClasses'
+import {
+  selectHomepageContent,
+  selectStoreConfig,
+  selectTrustPoints,
+  useSiteContentStore,
+} from '../store/siteContentStore'
 import type { Product } from '../types'
 
 interface HomePageProps {
@@ -26,30 +31,15 @@ const categoryLabels: Record<string, string> = {
   'Fitness & Outdoor': '健身户外',
 }
 
-const activityDeals = [
-  {
-    label: '满额免邮',
-    title: `满 $${storeConfig.freeShippingThreshold} 免标准运费`,
-    description: '旅行收纳、宠物清洁、夏日降温好物可一起凑单。',
-  },
-  {
-    label: '夏日热卖',
-    title: 'Cooling 系列限时主推',
-    description: '毛巾、挂脖风扇、冰丝毯覆盖通勤、健身和户外场景。',
-  },
-  {
-    label: '新客优惠',
-    title: '优惠码 SUMMER10',
-    description: '首单享 10% off，适合从 TikTok 或 Instagram 首次进站用户。',
-  },
-]
-
 export function HomePage({
   products,
   onNavigateCategories,
   onSelectProduct,
   onAddToCart,
 }: HomePageProps) {
+  const storeConfig = useSiteContentStore(selectStoreConfig)
+  const homepage = useSiteContentStore(selectHomepageContent)
+  const trustPoints = useSiteContentStore(selectTrustPoints)
   const bestSellers = products.slice(0, 8)
   const lowestPrice = Math.min(...products.map((product) => product.price))
 
@@ -67,7 +57,7 @@ export function HomePage({
             <div className="max-w-2xl">
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`rounded-full px-3 py-1 text-xs font-bold ${theme.accentSoft}`}>
-                  新客码 SUMMER10 · 首单 9 折
+                  {homepage.heroBadge}
                 </span>
                 <span className="rounded-full border border-white/20 px-3 py-1 text-xs font-bold text-white/90">
                   满 ${storeConfig.freeShippingThreshold} 免邮
@@ -78,10 +68,10 @@ export function HomePage({
                 US Cross-Border Store
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-                淘酥酥 · 跨境好物直邮美国
+                {homepage.heroTitle}
               </h2>
               <p className="mt-4 text-base leading-7 text-white/85 sm:mt-5 sm:text-lg sm:leading-8">
-                {storeConfig.tagline} 支持 PayPal 与信用卡安全结账，日常好物定价从{' '}
+                {homepage.heroSubtitle} 支持 PayPal 与信用卡安全结账，日常好物定价从{' '}
                 {formatCurrency(lowestPrice, 'symbol')} 起。
               </p>
 
@@ -107,14 +97,14 @@ export function HomePage({
                   onClick={onNavigateCategories}
                   className={`min-h-12 rounded-full px-7 py-3 text-base sm:py-4 ${theme.primaryBtn}`}
                 >
-                  立即选购
+                  {homepage.primaryCta}
                 </button>
                 <button
                   type="button"
                   onClick={() => onSelectProduct(bestSellers[0].id)}
                   className={`min-h-12 rounded-full px-7 py-3 sm:py-4 ${theme.secondaryBtn}`}
                 >
-                  查看热卖款
+                  {homepage.secondaryCta}
                 </button>
               </div>
 
@@ -146,7 +136,7 @@ export function HomePage({
 
       <section className={`border-b ${theme.border} ${theme.surface}`}>
         <div className="home-scroll-row mx-auto flex max-w-7xl gap-3 overflow-x-auto px-4 py-6 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-6 sm:py-8 lg:grid-cols-4 lg:px-8">
-          {storeTrustPoints.map((point, index) => (
+          {trustPoints.map((point, index) => (
             <div
               key={point}
               className={`flex min-w-[11rem] shrink-0 snap-start items-start gap-3 rounded-2xl p-4 sm:min-w-0 ${theme.surfaceMuted}`}
@@ -207,9 +197,9 @@ export function HomePage({
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="max-w-2xl">
               <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.accentText}`}>限时活动</p>
-              <h2 className={`mt-2 text-2xl font-black sm:text-3xl ${theme.heading}`}>夏日跨境好物节</h2>
+              <h2 className={`mt-2 text-2xl font-black sm:text-3xl ${theme.heading}`}>{homepage.promoSectionTitle}</h2>
               <p className={`mt-3 text-sm leading-7 sm:text-base ${theme.muted}`}>
-                凑单免邮、夏日热卖与新客优惠集中展示，帮助用户更快找到当前促销。
+                {homepage.promoSectionSubtitle}
               </p>
             </div>
             <button
@@ -222,7 +212,7 @@ export function HomePage({
           </div>
 
           <div className="home-scroll-row mt-6 flex gap-4 overflow-x-auto pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible sm:pb-0">
-            {activityDeals.map((deal) => (
+            {homepage.activityDeals.map((deal) => (
               <button
                 key={deal.label}
                 type="button"

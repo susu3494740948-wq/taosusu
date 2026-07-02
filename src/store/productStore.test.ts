@@ -3,7 +3,7 @@ import { useProductStore } from './productStore'
 import type { Product } from '../types'
 
 vi.mock('../lib/cloudCatalog', () => ({
-  fetchCloudProducts: vi.fn(async () => []),
+  fetchCloudProductsResult: vi.fn(async () => ({ ok: false, products: null })),
   syncProductsToGitHub: vi.fn(async () => undefined),
 }))
 

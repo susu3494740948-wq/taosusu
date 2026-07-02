@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-02T00:00:00.000Z",
+  "store": {
+    "name": "淘酥酥",
+    "tagline": "精选跨境生活方式好物，直邮美国，夏日降温、旅行收纳、宠物清洁、家居整理一站购齐。",
+    "market": "Ships to the United States",
+    "currency": "USD",
+    "freeShippingThreshold": 49,
+    "processingDays": "2-5 business days",
+    "deliveryDays": "7-15 business days",
+    "supportEmail": "support@taosusu.com"
+  },
+  "trustPoints": [
+    "Secure PayPal & card checkout",
+    "Tracked international shipping",
+    "30-day issue support",
+    "Conservative product claims"
+  ],
+  "homepage": {
+    "heroBadge": "新客码 SUMMER10 · 首单 9 折",
+    "heroTitle": "淘酥酥 · 跨境好物直邮美国",
+    "heroSubtitle": "精选跨境生活方式好物，直邮美国，夏日降温、旅行收纳、宠物清洁、家居整理一站购齐。",
+    "primaryCta": "立即选购",
+    "secondaryCta": "查看热卖款",
+    "promoSectionTitle": "夏日跨境好物节",
+    "promoSectionSubtitle": "凑单免邮、夏日热卖与新客优惠集中展示，帮助用户更快找到当前促销。",
+    "activityDeals": [
+      {
+        "label": "满额免邮",
+        "title": "满 $49 免标准运费",
+        "description": "旅行收纳、宠物清洁、夏日降温好物可一起凑单。"
+      },
+      {
+        "label": "夏日热卖",
+        "title": "Cooling 系列限时主推",
+        "description": "毛巾、挂脖风扇、冰丝毯覆盖通勤、健身和户外场景。"
+      },
+      {
+        "label": "新客优惠",
+        "title": "优惠码 SUMMER10",
+        "description": "首单享 10% off，适合从 TikTok 或 Instagram 首次进站用户。"
+      }
+    ]
+  },
+  "promos": [
+    {
+      "code": "SUMMER10",
+      "type": "percent",
+      "value": 10,
+      "message": "10% off applied"
+    },
+    {
+      "code": "FREESHIP",
+      "type": "free-shipping",
+      "message": "Free standard shipping applied"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { fetchCloudProducts, syncProductsToGitHub } from '../lib/cloudCatalog'
+import { fetchCloudProductsResult, syncProductsToGitHub } from '../lib/cloudCatalog'
 import { usePreferencesStore } from './preferencesStore'
 import type { Product } from '../types'
 
@@ -40,9 +40,13 @@ export const useProductStore = create<ProductState>()(
       setCustomProducts: (products) => set({ customProducts: sortProducts(products) }),
 
       loadFromCloud: async () => {
-        const cloudProducts = await fetchCloudProducts()
-        if (cloudProducts.length > 0) {
-          set({ customProducts: sortProducts(cloudProducts), cloudLoaded: true, cloudSyncError: null })
+        const result = await fetchCloudProductsResult()
+        if (result.ok) {
+          set({
+            customProducts: sortProducts(result.products),
+            cloudLoaded: true,
+            cloudSyncError: null,
+          })
           return
         }
         set({ cloudLoaded: true })

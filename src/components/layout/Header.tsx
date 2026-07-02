@@ -1,5 +1,5 @@
 import { selectCartCount, useCartStore } from '../../store/cartStore'
-import { storeConfig } from '../../data/store'
+import { selectStoreConfig, useSiteContentStore } from '../../store/siteContentStore'
 import { theme } from '../../lib/themeClasses'
 import type { Product } from '../../types'
 import { SearchBar } from './SearchBar'
@@ -12,7 +12,7 @@ interface HeaderProps {
   onSearchChange: (value: string) => void
   onSearchSubmit: () => void
   onSelectProduct: (productId: string) => void
-  onNavigate: (page: 'home' | 'categories' | 'checkout' | 'admin' | 'upload' | 'reviews' | 'settings' | 'account') => void
+  onNavigate: (page: 'home' | 'categories' | 'checkout' | 'admin' | 'upload' | 'reviews' | 'settings' | 'account' | 'site-content') => void
   onOpenCart: () => void
 }
 
@@ -28,6 +28,7 @@ export function Header({
   onOpenCart,
 }: HeaderProps) {
   const cartCount = useCartStore(selectCartCount)
+  const storeConfig = useSiteContentStore(selectStoreConfig)
   const navItems = [
     { label: 'Home', page: 'home' as const },
     { label: '商品分类', page: 'categories' as const },

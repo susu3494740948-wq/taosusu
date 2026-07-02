@@ -49,10 +49,15 @@ const decisionStyles = {
 
 interface AdminDashboardPageProps {
   onNavigateUpload: () => void
+  onNavigateSiteContent: () => void
   catalogCount: number
 }
 
-export function AdminDashboardPage({ onNavigateUpload, catalogCount }: AdminDashboardPageProps) {
+export function AdminDashboardPage({
+  onNavigateUpload,
+  onNavigateSiteContent,
+  catalogCount,
+}: AdminDashboardPageProps) {
   const summary = buildOperationsSummary(products)
   const sortedProducts = [...products].sort((a, b) => b.reviewCount - a.reviewCount)
 
@@ -70,13 +75,22 @@ export function AdminDashboardPage({ onNavigateUpload, catalogCount }: AdminDash
           <span className="rounded-full bg-white/10 px-4 py-2">测试周期：{trafficFunnel.period}</span>
           <span className="rounded-full bg-white/10 px-4 py-2">客服：{storeConfig.supportEmail}</span>
         </div>
-        <button
-          type="button"
-          onClick={onNavigateUpload}
-          className="mt-8 rounded-full bg-emerald-400 px-6 py-3 text-sm font-black text-stone-950 transition hover:bg-emerald-300"
-        >
-          上传新商品 →
-        </button>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={onNavigateUpload}
+            className="rounded-full bg-emerald-400 px-6 py-3 text-sm font-black text-stone-950 transition hover:bg-emerald-300"
+          >
+            上传新商品 →
+          </button>
+          <button
+            type="button"
+            onClick={onNavigateSiteContent}
+            className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
+          >
+            编辑站点内容 →
+          </button>
+        </div>
       </section>
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

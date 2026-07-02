@@ -11,6 +11,7 @@ import { useCartStore } from './store/cartStore'
 import { useOrderStore } from './store/orderStore'
 import { usePreferencesStore } from './store/preferencesStore'
 import { useProductStore } from './store/productStore'
+import { useSiteContentStore } from './store/siteContentStore'
 import type { Category, Order, Product } from './types'
 import { AdminDashboardPage } from './pages/AdminDashboardPage'
 import { CategoryPage } from './pages/CategoryPage'
@@ -20,10 +21,11 @@ import { HomePage } from './pages/HomePage'
 import { OrderSuccessPage } from './pages/OrderSuccessPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { SiteContentPage } from './pages/SiteContentPage'
 import { UploadProductPage } from './pages/UploadProductPage'
 import { UserAccountPage } from './pages/UserAccountPage'
 
-type Page = 'home' | 'categories' | 'detail' | 'checkout' | 'success' | 'admin' | 'upload' | 'reviews' | 'settings' | 'account'
+type Page = 'home' | 'categories' | 'detail' | 'checkout' | 'success' | 'admin' | 'upload' | 'site-content' | 'reviews' | 'settings' | 'account'
 
 export default function App() {
   const addItem = useCartStore((state) => state.addItem)
@@ -49,13 +51,19 @@ export default function App() {
   const selectedProduct =
     getCatalogProductById(selectedProductId, customProducts) ?? catalogProducts[0] ?? baseProducts[0]
   const showSearch =
-    page !== 'admin' && page !== 'upload' && page !== 'reviews' && page !== 'settings' && page !== 'account'
+    page !== 'admin' &&
+    page !== 'upload' &&
+    page !== 'site-content' &&
+    page !== 'reviews' &&
+    page !== 'settings' &&
+    page !== 'account'
   const showMobileNav = page !== 'checkout' && page !== 'success'
 
   usePreferencesEffect()
 
   useEffect(() => {
     void useProductStore.getState().loadFromCloud()
+    void useSiteContentStore.getState().loadFromCloud()
   }, [])
 
   useEffect(() => {
@@ -148,7 +156,13 @@ export default function App() {
       )
     }
     if (page === 'admin') {
-      return <AdminDashboardPage onNavigateUpload={() => navigate('upload')} catalogCount={catalogProducts.length} />
+      return (
+        <AdminDashboardPage
+          onNavigateUpload={() => navigate('upload')}
+          onNavigateSiteContent={() => navigate('site-content')}
+          catalogCount={catalogProducts.length}
+        />
+      )
     }
     if (page === 'upload') {
       return (
@@ -157,6 +171,9 @@ export default function App() {
           onViewProduct={selectProduct}
         />
       )
+    }
+    if (page === 'site-content') {
+      return <SiteContentPage onNavigateAdmin={() => navigate('admin')} />
     }
     if (page === 'reviews') {
       return <RecentReviewsPage onViewProduct={selectProduct} />

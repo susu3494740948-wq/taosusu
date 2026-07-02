@@ -400,8 +400,8 @@ export function SettingsPage() {
             <label className="block rounded-2xl bg-stone-100 px-4 py-4 dark:bg-stone-900">
               <span className="text-sm font-bold text-stone-950 dark:text-stone-50">GitHub 商品同步 Token</span>
               <p className="mt-1 text-sm leading-6 text-stone-600 dark:text-stone-300">
-                创建 Personal Access Token（需 repo 写权限）。保存后，上传的商品会写入仓库
-                public/data/custom-products.json，部署后所有访客可见。Token 仅保存在本机浏览器。
+                创建 Personal Access Token（需 repo 写权限）。保存后，上传的商品与站点内容会写入仓库
+                public/data/ 下的 JSON 文件，本地与线上会自动同步。Token 仅保存在本机浏览器。
               </p>
               <input
                 type="password"
