@@ -2,7 +2,7 @@ import { products as baseProducts } from '../data/products'
 import type { Category, Product } from '../types'
 
 export function mergeCatalogProducts(customProducts: Product[]): Product[] {
-  return [...baseProducts, ...customProducts]
+  return [...customProducts, ...baseProducts]
 }
 
 export function getCatalogProductById(id: string, customProducts: Product[]): Product | undefined {

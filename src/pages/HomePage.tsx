@@ -1,7 +1,9 @@
+import { useMemo } from 'react'
 import { ProductCard } from '../components/product/ProductCard'
 import { ProductArtwork } from '../components/product/ProductArtwork'
 import { categoryMeta } from '../data/categoryMeta'
-import { categories, getProductsByCategory } from '../data/products'
+import { categories } from '../data/products'
+import { baseProducts } from '../lib/catalog'
 import { heroImageUrl } from '../data/productPhotos'
 import { formatCurrency } from '../lib/formatters'
 import { theme } from '../lib/themeClasses'
@@ -40,6 +42,11 @@ export function HomePage({
   const storeConfig = useSiteContentStore(selectStoreConfig)
   const homepage = useSiteContentStore(selectHomepageContent)
   const trustPoints = useSiteContentStore(selectTrustPoints)
+  const baseProductIds = useMemo(() => new Set(baseProducts.map((product) => product.id)), [])
+  const newListings = useMemo(
+    () => products.filter((product) => !baseProductIds.has(product.id)),
+    [products, baseProductIds],
+  )
   const bestSellers = products.slice(0, 8)
   const lowestPrice = Math.min(...products.map((product) => product.price))
 
@@ -181,7 +188,7 @@ export function HomePage({
                   <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
                   <div className="absolute bottom-0 p-4 text-white">
                     <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${theme.heroAccent}`}>
-                      {getProductsByCategory(category).length} 件商品
+                      {products.filter((product) => product.category === category).length} 件商品
                     </p>
                     <h3 className="mt-1 text-lg font-black">{categoryLabels[category] ?? category}</h3>
                   </div>
@@ -228,6 +235,33 @@ export function HomePage({
         </div>
       </section>
 
+      {newListings.length > 0 ? (
+        <section className={`border-t ${theme.border} ${theme.surface}`}>
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
+              <div>
+                <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>New listings</p>
+                <h2 className={`mt-2 text-2xl font-black sm:text-3xl ${theme.heading}`}>最新上架</h2>
+              </div>
+              <button type="button" onClick={onNavigateCategories} className={`font-bold ${theme.accentText}`}>
+                查看全部 →
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+              {newListings.slice(0, 4).map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onSelect={onSelectProduct}
+                  onAddToCart={onAddToCart}
+                  showImageOverlay={false}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4 sm:mb-8">
           <div>
@@ -252,7 +286,7 @@ export function HomePage({
       </section>
 
       {categories.slice(0, 3).map((category) => {
-        const categoryProducts = getProductsByCategory(category).slice(0, 3)
+        const categoryProducts = products.filter((product) => product.category === category).slice(0, 3)
         if (categoryProducts.length === 0) return null
 
         return (
