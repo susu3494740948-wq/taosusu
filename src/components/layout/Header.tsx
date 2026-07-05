@@ -6,19 +6,30 @@ import { SearchBar } from './SearchBar'
 
 interface HeaderProps {
   currentPage: string
-  showSearch: boolean
   products: Product[]
   searchQuery: string
   onSearchChange: (value: string) => void
   onSearchSubmit: () => void
   onSelectProduct: (productId: string) => void
-  onNavigate: (page: 'home' | 'categories' | 'checkout' | 'admin' | 'upload' | 'reviews' | 'settings' | 'account' | 'site-content') => void
+  onNavigate: (
+    page:
+      | 'home'
+      | 'categories'
+      | 'checkout'
+      | 'admin'
+      | 'upload'
+      | 'reviews'
+      | 'settings'
+      | 'account'
+      | 'site-content'
+      | 'blog'
+      | 'blog-editor',
+  ) => void
   onOpenCart: () => void
 }
 
 export function Header({
   currentPage,
-  showSearch,
   products,
   searchQuery,
   onSearchChange,
@@ -33,12 +44,13 @@ export function Header({
     { label: 'Home', page: 'home' as const },
     { label: '商品分类', page: 'categories' as const },
     { label: '运营中心', page: 'admin' as const },
+    { label: '顾客博客', page: 'blog' as const },
     { label: '刚收到评论', page: 'reviews' as const },
   ]
 
   return (
-    <header className={`sticky top-0 z-40 backdrop-blur ${theme.surface} ${theme.border} border-b`}>
-      <div className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+    <header className={`mobile-header sticky top-0 z-40 backdrop-blur ${theme.surface} ${theme.border} border-b`}>
+      <div className="mx-auto max-w-7xl px-3 py-2.5 sm:px-6 sm:py-4 lg:px-8">
         <div className="flex items-center justify-between gap-2 sm:gap-4">
           <button type="button" className="min-w-0 shrink text-left" onClick={() => onNavigate('home')}>
             <p className={`hidden text-xs font-bold uppercase tracking-[0.3em] sm:block ${theme.muted}`}>
@@ -47,17 +59,15 @@ export function Header({
             <h1 className={`truncate text-lg font-black sm:text-xl ${theme.heading}`}>{storeConfig.name}</h1>
           </button>
 
-          {showSearch ? (
-            <div className="hidden min-w-0 flex-1 px-4 lg:block lg:max-w-xl">
-              <SearchBar
-                products={products}
-                value={searchQuery}
-                onChange={onSearchChange}
-                onSubmit={onSearchSubmit}
-                onSelectProduct={onSelectProduct}
-              />
-            </div>
-          ) : null}
+          <div className="hidden min-w-0 flex-1 px-2 md:block md:max-w-xl lg:px-4">
+            <SearchBar
+              products={products}
+              value={searchQuery}
+              onChange={onSearchChange}
+              onSubmit={onSearchSubmit}
+              onSelectProduct={onSelectProduct}
+            />
+          </div>
 
           <nav className="hidden items-center gap-2 xl:flex">
             {navItems.map((item) => (
@@ -97,31 +107,38 @@ export function Header({
             <button
               type="button"
               onClick={onOpenCart}
-              className={`relative min-h-11 rounded-full px-3 py-2 text-sm sm:min-h-0 sm:px-4 sm:py-3 ${theme.primaryBtn}`}
+              className={`relative hidden min-h-11 rounded-full px-4 py-3 text-sm md:inline-flex ${theme.primaryBtn}`}
               aria-label={`购物车，${cartCount} 件商品`}
             >
-              <span className="md:hidden">🛒</span>
-              <span className="hidden md:inline">Cart ({cartCount})</span>
-              {cartCount > 0 ? (
-                <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[var(--accent)] px-1 text-[10px] font-black text-white md:hidden">
-                  {cartCount}
-                </span>
-              ) : null}
+              Cart ({cartCount})
             </button>
           </div>
         </div>
 
-        {showSearch ? (
-          <div className="mt-2 sm:mt-3 lg:hidden">
-            <SearchBar
-              products={products}
-              value={searchQuery}
-              onChange={onSearchChange}
-              onSubmit={onSearchSubmit}
-              onSelectProduct={onSelectProduct}
-            />
-          </div>
-        ) : null}
+        <div className="home-scroll-row mt-2 flex gap-2 overflow-x-auto pb-1 md:hidden">
+          {navItems.map((item) => (
+            <button
+              key={item.page}
+              type="button"
+              onClick={() => onNavigate(item.page)}
+              className={`shrink-0 touch-target rounded-full px-4 py-2 text-xs font-bold ${
+                currentPage === item.page ? theme.navActive : `${theme.surfaceMuted} ${theme.muted}`
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-2 md:hidden">
+          <SearchBar
+            products={products}
+            value={searchQuery}
+            onChange={onSearchChange}
+            onSubmit={onSearchSubmit}
+            onSelectProduct={onSelectProduct}
+          />
+        </div>
       </div>
     </header>
   )

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "blog-cooling-towel-review",
+    "type": "product-review",
+    "title": "夏日通勤必备：降温毛巾真实体验",
+    "author": "Jess M.",
+    "content": "在佛罗里达户外走了整整一下午，毛巾打湿后挂在脖子上真的能撑几个小时。面料不磨皮肤，洗了一次也没有掉色。",
+    "createdAt": "2026-07-01T10:00:00.000Z",
+    "productId": "cooling-towel-kit",
+    "productName": "Cooling Towel 4-Pack",
+    "rating": 5
+  },
+  {
+    "id": "blog-travel-packing-photo",
+    "type": "photo",
+    "title": "周末旅行收纳实拍",
+    "author": "Chris L.",
+    "content": "压缩收纳袋 + 鞋袋组合，登机箱侧边刚好塞下三件套，机场开箱超整齐。",
+    "createdAt": "2026-06-28T14:30:00.000Z"
+  },
+  {
+    "id": "blog-neck-fan-video",
+    "type": "video",
+    "title": "挂脖风扇开箱：办公室静音实测",
+    "author": "Sam T.",
+    "content": "录了一段 30 秒开箱，三档风力在工位上完全够用，USB-C 充电也方便。",
+    "createdAt": "2026-06-25T09:15:00.000Z",
+    "videoUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  }
+]

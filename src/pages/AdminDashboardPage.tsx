@@ -50,12 +50,16 @@ const decisionStyles = {
 interface AdminDashboardPageProps {
   onNavigateUpload: () => void
   onNavigateSiteContent: () => void
+  onNavigateBlog: () => void
+  onNavigateBlogView: () => void
   catalogCount: number
 }
 
 export function AdminDashboardPage({
   onNavigateUpload,
   onNavigateSiteContent,
+  onNavigateBlog,
+  onNavigateBlogView,
   catalogCount,
 }: AdminDashboardPageProps) {
   const summary = buildOperationsSummary(products)
@@ -89,6 +93,20 @@ export function AdminDashboardPage({
             className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
           >
             编辑站点内容 →
+          </button>
+          <button
+            type="button"
+            onClick={onNavigateBlog}
+            className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
+          >
+            发布顾客博客 →
+          </button>
+          <button
+            type="button"
+            onClick={onNavigateBlogView}
+            className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
+          >
+            查看顾客博客 →
           </button>
         </div>
       </section>

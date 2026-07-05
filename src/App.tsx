@@ -24,8 +24,24 @@ import { SettingsPage } from './pages/SettingsPage'
 import { SiteContentPage } from './pages/SiteContentPage'
 import { UploadProductPage } from './pages/UploadProductPage'
 import { UserAccountPage } from './pages/UserAccountPage'
+import { CustomerBlogPage } from './pages/CustomerBlogPage'
+import { BlogEditorPage } from './pages/BlogEditorPage'
+import { useBlogStore } from './store/blogStore'
 
-type Page = 'home' | 'categories' | 'detail' | 'checkout' | 'success' | 'admin' | 'upload' | 'site-content' | 'reviews' | 'settings' | 'account'
+type Page =
+  | 'home'
+  | 'categories'
+  | 'detail'
+  | 'checkout'
+  | 'success'
+  | 'admin'
+  | 'upload'
+  | 'site-content'
+  | 'blog'
+  | 'blog-editor'
+  | 'reviews'
+  | 'settings'
+  | 'account'
 
 export default function App() {
   const addItem = useCartStore((state) => state.addItem)
@@ -46,24 +62,20 @@ export default function App() {
   const [lastOrder, setLastOrder] = useState<Order | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [shopCategory, setShopCategory] = useState<Category | null>(null)
-  const [detailReturnPage, setDetailReturnPage] = useState<'home' | 'categories' | 'reviews'>('home')
+  const [detailReturnPage, setDetailReturnPage] = useState<'home' | 'categories' | 'reviews' | 'blog'>('home')
 
   const selectedProduct =
     getCatalogProductById(selectedProductId, customProducts) ?? catalogProducts[0] ?? baseProducts[0]
-  const showSearch =
-    page !== 'admin' &&
-    page !== 'upload' &&
-    page !== 'site-content' &&
-    page !== 'reviews' &&
-    page !== 'settings' &&
-    page !== 'account'
-  const showMobileNav = page !== 'checkout' && page !== 'success'
+  const showMobileNav =
+    page !== 'checkout' && page !== 'success' && page !== 'detail'
 
   usePreferencesEffect()
 
   useEffect(() => {
     void useProductStore.getState().loadFromCloud()
     void useSiteContentStore.getState().loadFromCloud()
+    void usePreferencesStore.getState().loadFromCloud()
+    void useBlogStore.getState().loadFromCloud()
   }, [])
 
   useEffect(() => {
@@ -82,7 +94,9 @@ export default function App() {
   }
 
   function selectProduct(productId: string) {
-    setDetailReturnPage(page === 'categories' ? 'categories' : page === 'reviews' ? 'reviews' : 'home')
+    setDetailReturnPage(
+      page === 'categories' ? 'categories' : page === 'reviews' ? 'reviews' : page === 'blog' ? 'blog' : 'home',
+    )
     setSelectedProductId(productId)
     navigate('detail')
   }
@@ -160,6 +174,8 @@ export default function App() {
         <AdminDashboardPage
           onNavigateUpload={() => navigate('upload')}
           onNavigateSiteContent={() => navigate('site-content')}
+          onNavigateBlog={() => navigate('blog-editor')}
+          onNavigateBlogView={() => navigate('blog')}
           catalogCount={catalogProducts.length}
         />
       )
@@ -175,10 +191,28 @@ export default function App() {
     if (page === 'site-content') {
       return <SiteContentPage onNavigateAdmin={() => navigate('admin')} />
     }
+    if (page === 'blog') {
+      return (
+        <CustomerBlogPage
+          onNavigateEditor={() => navigate('blog-editor')}
+          onViewProduct={selectProduct}
+        />
+      )
+    }
+    if (page === 'blog-editor') {
+      return (
+        <BlogEditorPage
+          onNavigateBlog={() => navigate('blog')}
+          onNavigateAdmin={() => navigate('admin')}
+        />
+      )
+    }
     if (page === 'reviews') {
       return <RecentReviewsPage onViewProduct={selectProduct} />
     }
-    if (page === 'settings') return <SettingsPage />
+    if (page === 'settings') {
+      return <SettingsPage onNavigateAdmin={() => navigate('admin')} />
+    }
     if (page === 'account') {
       return <UserAccountPage onNavigateShop={() => navigate('home')} onSelectProduct={selectProduct} />
     }
@@ -197,7 +231,6 @@ export default function App() {
     <div className={theme.page}>
       <Header
         currentPage={page}
-        showSearch={showSearch}
         products={catalogProducts}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
