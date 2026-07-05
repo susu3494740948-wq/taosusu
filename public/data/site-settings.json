@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-05T00:00:00.000Z",
+  "preferences": {
+    "theme": "light",
+    "storeTheme": "classic",
+    "language": "bilingual",
+    "fontSize": "normal",
+    "reducedMotion": false,
+    "defaultShippingMethod": "standard",
+    "shippingRegion": "us-all",
+    "currencyFormat": "symbol",
+    "productSort": "featured",
+    "addToCartBehavior": "open-drawer",
+    "preferredPayment": "paypal",
+    "savedPromoCode": "SUMMER10",
+    "autoApplySavedPromo": false,
+    "showCompareAtPrice": true,
+    "compactCatalog": false,
+    "showReviewStars": true,
+    "showOutOfStock": true,
+    "showLowStockBadge": true,
+    "orderEmailUpdates": true,
+    "marketingEmails": false,
+    "smsShippingUpdates": false,
+    "priceDropAlerts": true,
+    "backInStockAlerts": true,
+    "saveBrowsingHistory": true,
+    "analyticsCookies": false,
+    "personalizedRecommendations": true,
+    "rememberCheckoutInfo": true
+  }
+}

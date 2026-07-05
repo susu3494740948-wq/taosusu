@@ -75,21 +75,21 @@ export function ProductCard({ product, onSelect, onAddToCart, showImageOverlay =
           </div>
         </div>
       </button>
-      <div className="mt-2 grid gap-2 px-2 pb-2">
-        <button
-          type="button"
-          onClick={() => onSelect(product.id)}
-          className={`rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn}`}
-        >
-          查看详情
-        </button>
+      <div className="mt-2 grid grid-cols-1 gap-2 px-1 pb-1 sm:px-2 sm:pb-2">
         <button
           type="button"
           onClick={() => onAddToCart(product)}
           className={`w-full rounded-full px-4 py-3 text-sm ${theme.primaryBtn} disabled:opacity-40`}
           disabled={product.stock === 0}
         >
-          {product.stock > 0 ? 'Add to cart' : 'Out of stock'}
+          {product.stock > 0 ? '加入购物车' : '暂时缺货'}
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect(product.id)}
+          className={`hidden rounded-full px-4 py-2 text-sm font-bold sm:inline-flex ${theme.secondaryBtn}`}
+        >
+          查看详情
         </button>
       </div>
     </article>

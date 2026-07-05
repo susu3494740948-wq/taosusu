@@ -16,61 +16,74 @@ const navItems: { page: NavPage; label: string; icon: string }[] = [
   { page: 'settings', label: '我的', icon: '⚙' },
 ]
 
+function NavButton({
+  active,
+  label,
+  icon,
+  onClick,
+  badge,
+}: {
+  active: boolean
+  label: string
+  icon: string
+  onClick: () => void
+  badge?: number
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 px-1 py-1.5 text-[11px] font-bold transition active:scale-95 ${
+        active ? theme.accentText : theme.muted
+      }`}
+    >
+      <span
+        className={`flex h-8 w-8 items-center justify-center rounded-2xl text-base leading-none ${
+          active ? theme.accentSoft : ''
+        }`}
+        aria-hidden="true"
+      >
+        {icon}
+      </span>
+      {label}
+      {badge && badge > 0 ? (
+        <span className="absolute right-2 top-1 min-w-5 rounded-full bg-[var(--accent)] px-1 text-[10px] font-black text-white">
+          {badge}
+        </span>
+      ) : null}
+    </button>
+  )
+}
+
 export function MobileBottomNav({ currentPage, onNavigate, onOpenCart }: MobileBottomNavProps) {
   const cartCount = useCartStore(selectCartCount)
 
   return (
     <nav
-      className={`mobile-bottom-nav fixed inset-x-0 bottom-0 z-40 border-t md:hidden ${theme.surface} ${theme.border}`}
+      className={`mobile-bottom-nav fixed inset-x-0 bottom-0 z-40 border-t backdrop-blur-md md:hidden ${theme.surface} ${theme.border}`}
       aria-label="手机底部导航"
     >
       <div className="mx-auto grid max-w-lg grid-cols-5">
         {navItems.slice(0, 2).map((item) => (
-          <button
+          <NavButton
             key={item.page}
-            type="button"
+            active={currentPage === item.page}
+            label={item.label}
+            icon={item.icon}
             onClick={() => onNavigate(item.page)}
-            className={`flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-2 text-[11px] font-bold ${
-              currentPage === item.page ? theme.accentText : theme.muted
-            }`}
-          >
-            <span className="text-lg leading-none" aria-hidden="true">
-              {item.icon}
-            </span>
-            {item.label}
-          </button>
+          />
         ))}
 
-        <button
-          type="button"
-          onClick={onOpenCart}
-          className={`relative flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-2 text-[11px] font-bold ${theme.muted}`}
-        >
-          <span className="text-lg leading-none" aria-hidden="true">
-            🛒
-          </span>
-          购物车
-          {cartCount > 0 ? (
-            <span className="absolute right-[calc(50%-1.25rem)] top-1.5 min-w-5 rounded-full bg-[var(--accent)] px-1 text-[10px] font-black text-white">
-              {cartCount}
-            </span>
-          ) : null}
-        </button>
+        <NavButton active={false} label="购物车" icon="🛒" onClick={onOpenCart} badge={cartCount} />
 
         {navItems.slice(2).map((item) => (
-          <button
+          <NavButton
             key={item.page}
-            type="button"
+            active={currentPage === item.page}
+            label={item.label}
+            icon={item.icon}
             onClick={() => onNavigate(item.page)}
-            className={`flex min-h-14 flex-col items-center justify-center gap-0.5 px-1 py-2 text-[11px] font-bold ${
-              currentPage === item.page ? theme.accentText : theme.muted
-            }`}
-          >
-            <span className="text-lg leading-none" aria-hidden="true">
-              {item.icon}
-            </span>
-            {item.label}
-          </button>
+          />
         ))}
       </div>
     </nav>

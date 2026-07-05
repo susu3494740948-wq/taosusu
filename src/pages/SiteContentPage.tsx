@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { canSyncToCloud } from '../lib/cloudSync'
 import { theme } from '../lib/themeClasses'
 import type { SiteContent } from '../data/siteContentDefaults'
@@ -37,6 +37,30 @@ export function SiteContentPage({ onNavigateAdmin }: SiteContentPageProps) {
   const fieldClass = `mt-2 rounded-2xl px-4 py-3 ${theme.input}`
 
   const activityDeals = useMemo(() => draft.homepage.activityDeals.slice(0, 3), [draft.homepage.activityDeals])
+  const hasUnsavedChanges = useMemo(
+    () => JSON.stringify(draft) !== JSON.stringify(content),
+    [draft, content],
+  )
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return undefined
+    const timer = setTimeout(() => {
+      void (async () => {
+        setIsSaving(true)
+        try {
+          await saveContent(draft)
+          setSuccessMessage(
+            cloudSyncEnabled
+              ? '站点内容已自动同步到云端。'
+              : '站点内容已保存到本机。请配置 GitHub Token 以同步到线上。',
+          )
+        } finally {
+          setIsSaving(false)
+        }
+      })()
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [draft, hasUnsavedChanges, cloudSyncEnabled, saveContent])
 
   function updateDraft(next: Partial<SiteContent>) {
     setDraft((current) => ({ ...current, ...next }))
@@ -73,7 +97,7 @@ export function SiteContentPage({ onNavigateAdmin }: SiteContentPageProps) {
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Site Content</p>
         <h2 className={theme.pageTitle}>编辑站点内容</h2>
         <p className={theme.pageSubtitle}>
-          修改店名、首页文案、活动卡片与优惠码。保存后写入云端 JSON，本地开发与线上网站会自动同步。
+          修改店名、首页文案、活动卡片与优惠码。内容会在停止输入约 1 秒后自动同步到云端 JSON。
         </p>
         <button
           type="button"

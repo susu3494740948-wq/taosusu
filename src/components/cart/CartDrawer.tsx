@@ -34,8 +34,11 @@ export function CartDrawer({ open, onClose, onCheckout }: CartDrawerProps) {
         onClick={onClose}
       />
       <aside
-        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col p-4 shadow-2xl sm:p-6 ${theme.surface}`}
-        style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+        className={`absolute right-0 top-0 flex h-[100dvh] max-h-[100dvh] w-full max-w-md flex-col p-3 shadow-2xl sm:p-6 ${theme.surface}`}
+        style={{
+          paddingTop: 'max(0.75rem, env(safe-area-inset-top))',
+          paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+        }}
       >
         <div className={`flex items-center justify-between border-b pb-4 ${theme.border}`}>
           <div>

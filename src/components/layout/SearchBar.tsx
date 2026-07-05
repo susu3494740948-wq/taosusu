@@ -110,8 +110,11 @@ export function SearchBar({
               清除
             </button>
           ) : null}
-          <button type="submit" className={`shrink-0 rounded-full px-4 py-2 text-sm ${theme.primaryBtn}`}>
-            搜索
+          <button type="submit" className={`touch-target shrink-0 rounded-full px-3 py-2 text-sm sm:px-4 ${theme.primaryBtn}`}>
+            <span className="sm:hidden" aria-hidden="true">
+              ⌕
+            </span>
+            <span className="hidden sm:inline">搜索</span>
           </button>
         </div>
       </form>

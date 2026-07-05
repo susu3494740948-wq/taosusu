@@ -8,6 +8,8 @@
 
 html {
   font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   --page-bg: #fafaf9;
   --surface: #ffffff;
   --surface-muted: #f5f5f4;
@@ -424,10 +426,15 @@ body {
   color: var(--text);
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+  overflow-x: hidden;
+}
+
+.mobile-header {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .mobile-shell {
-  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
 
 @media (min-width: 768px) {
@@ -438,15 +445,35 @@ body {
 
 .mobile-bottom-nav {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 .mobile-sticky-bar {
-  padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
-@media (min-width: 768px) {
-  .mobile-sticky-bar {
-    padding-bottom: 0;
+.touch-target {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+
+.mobile-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .mobile-card-grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

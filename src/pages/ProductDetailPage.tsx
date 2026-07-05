@@ -46,7 +46,7 @@ export function ProductDetailPage({
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 sm:pb-10 sm:pt-10 lg:px-8">
+    <main className="mx-auto max-w-7xl px-3 pb-24 pt-4 sm:px-6 sm:pb-10 sm:pt-10 lg:px-8">
       <nav aria-label="面包屑" className={`mb-4 flex flex-wrap items-center gap-2 text-xs sm:mb-6 sm:text-sm ${theme.muted}`}>
         <button type="button" onClick={onNavigateHome} className={`font-bold ${theme.accentText}`}>
           首页
@@ -216,7 +216,7 @@ export function ProductDetailPage({
         </section>
       )}
       <div
-        className={`mobile-sticky-bar fixed inset-x-0 bottom-0 z-30 border-t md:hidden ${theme.surface} ${theme.border}`}
+        className={`mobile-sticky-bar fixed inset-x-0 bottom-0 z-40 border-t md:hidden ${theme.surface} ${theme.border}`}
       >
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
           <div className="min-w-0 flex-1">

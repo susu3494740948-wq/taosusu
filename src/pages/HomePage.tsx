@@ -59,25 +59,25 @@ export function HomePage({
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/95 via-stone-950/80 to-stone-950/50" />
-        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
+        <div className="relative mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-12">
             <div className="max-w-2xl">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className={`rounded-full px-3 py-1 text-xs font-bold ${theme.accentSoft}`}>
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold sm:px-3 sm:text-xs ${theme.accentSoft}`}>
                   {homepage.heroBadge}
                 </span>
-                <span className="rounded-full border border-white/20 px-3 py-1 text-xs font-bold text-white/90">
+                <span className="rounded-full border border-white/20 px-2.5 py-1 text-[11px] font-bold text-white/90 sm:px-3 sm:text-xs">
                   满 ${storeConfig.freeShippingThreshold} 免邮
                 </span>
               </div>
 
-              <p className={`mt-5 text-xs font-bold uppercase tracking-[0.25em] sm:text-sm ${theme.heroAccent}`}>
+              <p className={`mt-4 text-[11px] font-bold uppercase tracking-[0.2em] sm:mt-5 sm:text-sm ${theme.heroAccent}`}>
                 US Cross-Border Store
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              <h2 className="mt-2 text-2xl font-black leading-tight tracking-tight sm:mt-3 sm:text-4xl lg:text-6xl">
                 {homepage.heroTitle}
               </h2>
-              <p className="mt-4 text-base leading-7 text-white/85 sm:mt-5 sm:text-lg sm:leading-8">
+              <p className="mt-3 text-sm leading-6 text-white/85 sm:mt-5 sm:text-lg sm:leading-8">
                 {homepage.heroSubtitle} 支持 PayPal 与信用卡安全结账，日常好物定价从{' '}
                 {formatCurrency(lowestPrice, 'symbol')} 起。
               </p>
@@ -118,6 +118,25 @@ export function HomePage({
               <p className="mt-5 text-xs leading-6 text-white/65 sm:text-sm">
                 {storeConfig.processingDays} 处理 · {storeConfig.deliveryDays} 送达美国 · 支持 PayPal / 信用卡
               </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 sm:hidden">
+              {bestSellers.slice(0, 2).map((product) => (
+                <button
+                  type="button"
+                  key={product.id}
+                  onClick={() => onSelectProduct(product.id)}
+                  className="group overflow-hidden rounded-2xl ring-1 ring-white/10 transition active:scale-[0.98]"
+                >
+                  <ProductArtwork
+                    image={product.image}
+                    name={product.name}
+                    customImageUrl={product.customImageUrl}
+                    subtitle={product.category}
+                    showBottomCaption
+                  />
+                </button>
+              ))}
             </div>
 
             <div className="hidden sm:grid sm:grid-cols-2 sm:gap-3 lg:gap-4">
@@ -247,7 +266,7 @@ export function HomePage({
                 查看全部 →
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+            <div className="grid mobile-card-grid">
               {newListings.slice(0, 4).map((product) => (
                 <ProductCard
                   key={product.id}
@@ -272,7 +291,7 @@ export function HomePage({
             查看全部 →
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <div className="grid mobile-card-grid lg:grid-cols-4">
           {bestSellers.map((product) => (
             <ProductCard
               key={product.id}
@@ -305,7 +324,7 @@ export function HomePage({
                   浏览分类 →
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
+              <div className="grid mobile-card-grid lg:grid-cols-3">
                 {categoryProducts.map((product) => (
                   <ProductCard
                     key={product.id}

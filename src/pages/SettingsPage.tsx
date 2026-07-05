@@ -4,6 +4,7 @@ import { ThemePicker } from '../components/settings/ThemePicker'
 import { storeThemes } from '../data/storeThemes'
 import { storeConfig } from '../data/store'
 import { buildPreferencesSummary } from '../lib/preferenceLabels'
+import { canSyncToCloud } from '../lib/cloudSync'
 import { theme } from '../lib/themeClasses'
 import { useCartStore } from '../store/cartStore'
 import {
@@ -121,8 +122,14 @@ function SectionCard({
   )
 }
 
-export function SettingsPage() {
+export function SettingsPage({ onNavigateAdmin }: { onNavigateAdmin?: () => void }) {
   const preferences = usePreferencesStore()
+  const cloudSyncError = usePreferencesStore((state) => state.cloudSyncError)
+  const cloudSyncing = usePreferencesStore((state) => state.cloudSyncing)
+  const cloudLoaded = usePreferencesStore((state) => state.cloudLoaded)
+  const loadFromCloud = usePreferencesStore((state) => state.loadFromCloud)
+  const syncToCloudNow = usePreferencesStore((state) => state.syncToCloudNow)
+  const cloudSyncEnabled = canSyncToCloud(preferences.githubSyncToken)
   const setShippingMethod = useCartStore((state) => state.setShippingMethod)
   const setDiscountCode = useCartStore((state) => state.setDiscountCode)
   const [activeTab, setActiveTab] = useState<SettingsTab>('all')
@@ -158,8 +165,42 @@ export function SettingsPage() {
         <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.heroAccent}`}>Preferences</p>
         <h2 className={theme.pageTitle}>{storeConfig.name} · 偏好设置</h2>
         <p className={theme.pageSubtitle}>
-          自定义店铺主题、明暗模式、购物习惯与通知偏好。6 套主题即时切换，设置保存在本机浏览器。
+          修改主题、购物习惯或优惠码后会自动同步到云端 JSON，本地与线上网站保持一致。请先在「结账」标签配置 GitHub Token。
         </p>
+      </section>
+
+      <section className={`mt-6 rounded-2xl border px-5 py-4 ${theme.surface} ${theme.border}`}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className={`text-sm font-bold ${theme.heading}`}>云端自动同步</p>
+            <p className={`mt-1 text-sm ${theme.muted}`}>
+              {cloudSyncEnabled
+                ? cloudSyncing
+                  ? '正在同步设置到 GitHub…'
+                  : '已启用：每次修改设置会自动写入 public/data/site-settings.json。'
+                : '未配置 Token：设置仅保存在本机。请在下方「结账」标签填写 GitHub Token。'}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={!cloudLoaded}
+              onClick={() => void loadFromCloud()}
+              className={`rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn} border ${theme.border} disabled:opacity-50`}
+            >
+              从云端刷新
+            </button>
+            <button
+              type="button"
+              disabled={!cloudSyncEnabled || cloudSyncing}
+              onClick={() => void syncToCloudNow()}
+              className={`rounded-full px-4 py-2 text-sm font-bold ${theme.primaryBtn} disabled:opacity-50`}
+            >
+              立即同步
+            </button>
+          </div>
+        </div>
+        {cloudSyncError ? <p className="mt-3 text-sm text-red-600">{cloudSyncError}</p> : null}
       </section>
 
       <div className="home-scroll-row mt-6 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0">
@@ -178,6 +219,20 @@ export function SettingsPage() {
       </div>
 
       <div className="mt-8 space-y-6">
+        {onNavigateAdmin ? (
+          <section className={`rounded-[2rem] p-5 sm:p-8 ${theme.surface} ${theme.border} border`}>
+            <h3 className={`text-xl font-black ${theme.heading}`}>运营工具</h3>
+            <p className={`mt-2 text-sm leading-6 ${theme.muted}`}>在手机上管理商品上架与站点内容。</p>
+            <button
+              type="button"
+              onClick={onNavigateAdmin}
+              className={`mt-4 min-h-11 w-full rounded-full px-6 py-3 text-sm font-bold sm:w-auto ${theme.primaryBtn}`}
+            >
+              进入运营中心 →
+            </button>
+          </section>
+        ) : null}
+
         {showAppearance ? (
           <SectionCard title="外观与显示" description="店铺主题、明暗模式、字号与动效。">
             <div>
@@ -398,10 +453,10 @@ export function SettingsPage() {
               />
             </label>
             <label className="block rounded-2xl bg-stone-100 px-4 py-4 dark:bg-stone-900">
-              <span className="text-sm font-bold text-stone-950 dark:text-stone-50">GitHub 商品同步 Token</span>
+              <span className="text-sm font-bold text-stone-950 dark:text-stone-50">GitHub 云端同步 Token</span>
               <p className="mt-1 text-sm leading-6 text-stone-600 dark:text-stone-300">
-                创建 Personal Access Token（需 repo 写权限）。保存后，上传的商品与站点内容会写入仓库
-                public/data/ 下的 JSON 文件，本地与线上会自动同步。Token 仅保存在本机浏览器。
+                创建 Personal Access Token（需 repo 写权限）。配置后，设置、商品与站点内容会在每次修改时自动同步到
+                public/data/ 下的 JSON 文件，线上网站随即更新。Token 仅保存在本机浏览器。
               </p>
               <input
                 type="password"
