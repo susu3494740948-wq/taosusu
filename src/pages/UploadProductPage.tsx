@@ -25,9 +25,12 @@ interface UploadProductPageProps {
 export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProductPageProps) {
   const currencyFormat = usePreferencesStore((state) => state.currencyFormat)
   const customProducts = useProductStore((state) => state.customProducts)
+  const delistedProductIds = useProductStore((state) => state.delistedProductIds)
   const addProduct = useProductStore((state) => state.addProduct)
   const updateProduct = useProductStore((state) => state.updateProduct)
   const removeProduct = useProductStore((state) => state.removeProduct)
+  const delistProduct = useProductStore((state) => state.delistProduct)
+  const relistProduct = useProductStore((state) => state.relistProduct)
   const loadFromCloud = useProductStore((state) => state.loadFromCloud)
   const cloudSyncError = useProductStore((state) => state.cloudSyncError)
   const cloudLoaded = useProductStore((state) => state.cloudLoaded)
@@ -65,7 +68,15 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const recentUploads = useMemo(() => customProducts.slice(0, 6), [customProducts])
+  const activeCustomProducts = useMemo(
+    () => customProducts.filter((product) => !delistedProductIds.includes(product.id)),
+    [customProducts, delistedProductIds],
+  )
+  const delistedCustomProducts = useMemo(
+    () => customProducts.filter((product) => delistedProductIds.includes(product.id)),
+    [customProducts, delistedProductIds],
+  )
+  const recentUploads = useMemo(() => activeCustomProducts.slice(0, 6), [activeCustomProducts])
 
   function updateField<K extends keyof ProductFormValues>(field: K, value: ProductFormValues[K]) {
     setValues((current) => ({ ...current, [field]: value }))
@@ -393,12 +404,14 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
         </div>
       </form>
 
-      {customProducts.length > 0 ? (
+      {activeCustomProducts.length > 0 ? (
         <section className="mt-12">
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>Listed SKUs</p>
-              <h3 className={`mt-2 text-2xl font-black ${theme.heading}`}>已上架商品 ({customProducts.length})</h3>
+              <h3 className={`mt-2 text-2xl font-black ${theme.heading}`}>
+                在售商品 ({activeCustomProducts.length})
+              </h3>
             </div>
           </div>
 
@@ -437,10 +450,67 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
                   </button>
                   <button
                     type="button"
+                    onClick={() => delistProduct(product.id)}
+                    className="rounded-full px-4 py-2 text-sm font-bold text-amber-700 transition hover:bg-amber-50"
+                  >
+                    下架
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => void removeProduct(product.id)}
                     className="rounded-full px-4 py-2 text-sm font-bold text-red-700 transition hover:bg-red-50"
                   >
-                    删除
+                    永久删除
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {delistedCustomProducts.length > 0 ? (
+        <section className="mt-12">
+          <div className="mb-5">
+            <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>Delisted SKUs</p>
+            <h3 className={`mt-2 text-2xl font-black ${theme.heading}`}>
+              已下架商品 ({delistedCustomProducts.length})
+            </h3>
+            <p className={`mt-2 text-sm ${theme.muted}`}>下架后前台不可见，可重新上架恢复销售。</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {delistedCustomProducts.map((product) => (
+              <article
+                key={product.id}
+                className={`rounded-3xl border border-dashed p-4 opacity-80 ${theme.surface} ${theme.border}`}
+              >
+                <div className="flex gap-4">
+                  <img
+                    src={product.customImageUrl ?? getProductPhotoUrl(product.image)}
+                    alt={product.name}
+                    className="h-20 w-20 shrink-0 rounded-2xl object-cover grayscale"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className={`truncate font-bold ${theme.heading}`}>{product.name}</p>
+                    <span className="mt-1 inline-block rounded-full bg-stone-200 px-2 py-0.5 text-xs font-bold text-stone-600">
+                      已下架
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => relistProduct(product.id)}
+                    className={`rounded-full px-4 py-2 text-sm font-bold ${theme.primaryBtn}`}
+                  >
+                    重新上架
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void removeProduct(product.id)}
+                    className="rounded-full px-4 py-2 text-sm font-bold text-red-700 transition hover:bg-red-50"
+                  >
+                    永久删除
                   </button>
                 </div>
               </article>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Bar,
   BarChart,
@@ -8,28 +9,22 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { products } from '../data/products'
 import {
   channelPerformance,
   complianceChecks,
   decisionReview,
   heroSkuSignals,
+  platformBreakdown,
   trafficFunnel,
   weeklyActions,
+  type PlatformId,
 } from '../data/operationsSnapshot'
 import { storeConfig } from '../data/store'
+import { getAllCatalogProducts, isProductDelisted, mergeCatalogProducts } from '../lib/catalog'
 import { formatCurrency } from '../lib/formatters'
 import { buildOperationsSummary, getSkuOperationalStatus } from '../lib/operationsMetrics'
 import { theme } from '../lib/themeClasses'
-
-const funnelSteps = [
-  { step: 'Impressions', value: trafficFunnel.impressions },
-  { step: 'Clicks', value: trafficFunnel.clicks },
-  { step: 'Page Views', value: trafficFunnel.pageViews },
-  { step: 'Add To Cart', value: trafficFunnel.addToCarts },
-  { step: 'Checkout', value: trafficFunnel.checkouts },
-  { step: 'Purchase', value: trafficFunnel.purchases },
-]
+import { useProductStore } from '../store/productStore'
 
 const statusStyles: Record<
   ReturnType<typeof getSkuOperationalStatus>,
@@ -62,8 +57,37 @@ export function AdminDashboardPage({
   onNavigateBlogView,
   catalogCount,
 }: AdminDashboardPageProps) {
-  const summary = buildOperationsSummary(products)
-  const sortedProducts = [...products].sort((a, b) => b.reviewCount - a.reviewCount)
+  const [activePlatform, setActivePlatform] = useState<PlatformId | 'all'>('all')
+  const customProducts = useProductStore((state) => state.customProducts)
+  const delistedProductIds = useProductStore((state) => state.delistedProductIds)
+  const delistProduct = useProductStore((state) => state.delistProduct)
+  const relistProduct = useProductStore((state) => state.relistProduct)
+  const activeProducts = mergeCatalogProducts(customProducts, delistedProductIds)
+  const allProducts = getAllCatalogProducts(customProducts)
+  const summary = buildOperationsSummary(activeProducts)
+  const sortedProducts = [...allProducts].sort((a, b) => b.reviewCount - a.reviewCount)
+  const delistedCount = delistedProductIds.length
+
+  const selectedPlatform =
+    activePlatform === 'all'
+      ? null
+      : platformBreakdown.find((platform) => platform.id === activePlatform) ?? null
+
+  const displayRevenue = selectedPlatform?.gmv ?? trafficFunnel.revenue
+  const displayOrders = selectedPlatform?.orders ?? trafficFunnel.purchases
+  const displayAov = selectedPlatform?.averageOrderValue ?? trafficFunnel.averageOrderValue
+  const displayAdSpend = selectedPlatform?.adSpend ?? trafficFunnel.adSpend
+  const displayImpressions = selectedPlatform?.impressions ?? trafficFunnel.impressions
+  const displayClicks = selectedPlatform?.clicks ?? trafficFunnel.clicks
+  const displayAddToCarts = selectedPlatform?.addToCarts ?? trafficFunnel.addToCarts
+
+  const platformFunnelSteps = [
+    { step: 'Impressions', value: displayImpressions },
+    { step: 'Clicks', value: displayClicks },
+    { step: 'Add To Cart', value: displayAddToCarts },
+    { step: 'Checkout', value: trafficFunnel.checkouts },
+    { step: 'Purchase', value: displayOrders },
+  ]
 
   return (
     <main className={theme.pageMain}>
@@ -71,13 +95,38 @@ export function AdminDashboardPage({
         <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-300">Operations Center</p>
         <h2 className={`${theme.pageTitle} text-white`}>{storeConfig.name} 运营中心</h2>
         <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 sm:text-base">
-          汇总商品库存、14 天流量测试、SKU 信号、合规检查与 Go / Pivot / Stop 决策，帮助你在放量前先看清瓶颈。
+          汇总多平台 GMV、库存、流量漏斗与合规检查，帮助运营助理每日跟数、周报汇总与低库存预警。（模拟数据）
         </p>
         <div className="mt-6 flex flex-wrap gap-3 text-sm text-stone-300">
-          <span className="rounded-full bg-white/10 px-4 py-2">市场：美国</span>
+          <span className="rounded-full bg-white/10 px-4 py-2">市场：美国 + 东南亚</span>
           <span className="rounded-full bg-white/10 px-4 py-2">在售 SKU：{catalogCount}</span>
+          {delistedCount > 0 ? (
+            <span className="rounded-full bg-red-400/20 px-4 py-2 text-red-200">已下架：{delistedCount}</span>
+          ) : null}
           <span className="rounded-full bg-white/10 px-4 py-2">测试周期：{trafficFunnel.period}</span>
-          <span className="rounded-full bg-white/10 px-4 py-2">客服：{storeConfig.supportEmail}</span>
+          <span className="rounded-full bg-amber-400/20 px-4 py-2 text-amber-200">模拟练习数据</span>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {(['all', 'tiktok', 'shopee', 'temu'] as const).map((platformId) => {
+            const label =
+              platformId === 'all'
+                ? '全平台'
+                : platformBreakdown.find((p) => p.id === platformId)?.label ?? platformId
+            return (
+              <button
+                key={platformId}
+                type="button"
+                onClick={() => setActivePlatform(platformId)}
+                className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                  activePlatform === platformId
+                    ? 'bg-emerald-400 text-stone-950'
+                    : 'border border-white/20 text-white hover:bg-white/10'
+                }`}
+              >
+                {label}
+              </button>
+            )
+          })}
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <button
@@ -116,11 +165,11 @@ export function AdminDashboardPage({
           ['在售 SKU', String(summary.activeSkus)],
           ['库存总量', `${summary.totalStockUnits} 件`],
           ['库存货值', formatCurrency(summary.inventoryValue)],
-          ['14天广告花费', formatCurrency(trafficFunnel.adSpend)],
-          ['14天营收', formatCurrency(trafficFunnel.revenue)],
-          ['平均客单价', formatCurrency(trafficFunnel.averageOrderValue)],
+          ['平台 GMV', formatCurrency(displayRevenue)],
+          ['平台订单', String(displayOrders)],
+          ['平均客单价', formatCurrency(displayAov)],
           ['低库存 SKU', String(summary.lowStockCount)],
-          ['预估贡献率', `${trafficFunnel.estimatedMargin}%`],
+          ['广告花费', formatCurrency(displayAdSpend)],
         ].map(([label, value]) => (
           <div key={label} className="rounded-3xl border border-stone-200 bg-white p-5">
             <p className="text-sm font-bold uppercase tracking-[0.15em] text-stone-500">{label}</p>
@@ -128,6 +177,43 @@ export function AdminDashboardPage({
           </div>
         ))}
       </section>
+
+      {selectedPlatform ? (
+        <section className="mt-6 rounded-[2rem] border border-emerald-200 bg-emerald-50 p-6">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-700">
+            {selectedPlatform.label} · 平台摘要（模拟）
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ['Top SKU', selectedPlatform.topSku],
+              ['退款率', `${selectedPlatform.refundRate}%`],
+              ['曝光', selectedPlatform.impressions.toLocaleString()],
+              ['备注', selectedPlatform.note],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-2xl bg-white p-4">
+                <p className="text-xs font-bold uppercase tracking-wide text-stone-500">{label}</p>
+                <p className="mt-2 text-sm font-bold text-stone-950">{value}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="mt-6 rounded-[2rem] border border-stone-200 bg-white p-6">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-stone-500">Platform comparison</p>
+          <h3 className="mt-2 text-xl font-black text-stone-950">各平台 GMV 对比（模拟）</h3>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {platformBreakdown.map((platform) => (
+              <div key={platform.id} className="rounded-2xl bg-stone-100 p-4">
+                <p className="font-bold text-stone-950">{platform.label}</p>
+                <p className="mt-2 text-2xl font-black text-stone-950">{formatCurrency(platform.gmv)}</p>
+                <p className="mt-1 text-sm text-stone-600">
+                  {platform.orders} 单 · 退款率 {platform.refundRate}%
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded-[2rem] border border-stone-200 bg-white p-6">
@@ -140,7 +226,7 @@ export function AdminDashboardPage({
           </div>
           <div className="mt-6 h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={funnelSteps} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+              <BarChart data={platformFunnelSteps} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e7e5e4" />
                 <XAxis dataKey="step" tick={{ fontSize: 12, fill: '#78716c' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12, fill: '#78716c' }} axisLine={false} tickLine={false} />
@@ -292,14 +378,17 @@ export function AdminDashboardPage({
                 <th className="px-3 py-3 font-bold">库存</th>
                 <th className="px-3 py-3 font-bold">评分</th>
                 <th className="px-3 py-3 font-bold">标签</th>
-                <th className="px-3 py-3 font-bold">状态</th>
+                <th className="px-3 py-3 font-bold">库存状态</th>
+                <th className="px-3 py-3 font-bold">上架状态</th>
+                <th className="px-3 py-3 font-bold">操作</th>
               </tr>
             </thead>
             <tbody>
               {sortedProducts.map((product) => {
                 const status = getSkuOperationalStatus(product.stock)
+                const delisted = isProductDelisted(product.id, delistedProductIds)
                 return (
-                  <tr key={product.id} className="border-b border-stone-100">
+                  <tr key={product.id} className={`border-b border-stone-100 ${delisted ? 'bg-stone-50 opacity-75' : ''}`}>
                     <td className="px-3 py-4 font-bold text-stone-950">{product.name}</td>
                     <td className="px-3 py-4 text-stone-600">{product.category}</td>
                     <td className="px-3 py-4 font-black text-stone-950">{formatCurrency(product.price)}</td>
@@ -312,6 +401,34 @@ export function AdminDashboardPage({
                       <span className={`rounded-full px-3 py-1 text-xs font-black ${statusStyles[status].className}`}>
                         {statusStyles[status].label}
                       </span>
+                    </td>
+                    <td className="px-3 py-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-black ${
+                          delisted ? 'bg-stone-200 text-stone-600' : 'bg-emerald-100 text-emerald-800'
+                        }`}
+                      >
+                        {delisted ? '已下架' : '在售'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-4">
+                      {delisted ? (
+                        <button
+                          type="button"
+                          onClick={() => relistProduct(product.id)}
+                          className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-black text-emerald-800 transition hover:bg-emerald-200"
+                        >
+                          重新上架
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => delistProduct(product.id)}
+                          className="rounded-full bg-red-50 px-3 py-1.5 text-xs font-black text-red-700 transition hover:bg-red-100"
+                        >
+                          下架
+                        </button>
+                      )}
                     </td>
                   </tr>
                 )

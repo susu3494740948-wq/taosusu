@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   caseStudySections,
   executionTimeline,
+  portfolioAttachments,
   portfolioSummary,
   portfolioVisuals,
   resumeBullets,
@@ -9,28 +10,29 @@ import {
 } from './portfolio.ts'
 
 describe('portfolio content', () => {
-  it('summarizes the cross-border ecommerce operations portfolio', () => {
-    expect(portfolioSummary.positioning).toContain('美国市场轻量生活方式产品独立站 MVP 验证项目')
-    expect(portfolioSummary.targetRole).toBe('跨境电商 / 独立站运营')
+  it('summarizes the cross-border operations assistant portfolio', () => {
+    expect(portfolioSummary.positioning).toContain('多平台运营助理作品集')
+    expect(portfolioSummary.targetRole).toBe('跨境电商运营助理（多平台）')
     expect(portfolioSummary.capabilities).toEqual([
-      '选品判断',
-      '供应商验证',
-      '独立站搭建',
-      '流量测试',
-      '数据复盘',
-      '风险控制',
+      'Listing 上架',
+      '日报周报',
+      '库存跟进',
+      '评论处理',
+      '活动协助',
+      '数据整理',
     ])
+    expect(portfolioSummary.platforms).toContain('TikTok Shop')
   })
 
-  it('keeps the case study in the planned operations funnel order', () => {
+  it('keeps the case study in assistant-focused order', () => {
     expect(caseStudySections.map((section) => section.id)).toEqual([
       'overview',
-      'market-selection',
-      'sku-scorecard',
-      'supplier-validation',
-      'site-build',
-      'traffic-test',
-      'decision-review',
+      'multi-platform-listing',
+      'ops-reporting',
+      'cs-review',
+      'supplier-support',
+      'traffic-data-entry',
+      'demo-store',
     ])
   })
 
@@ -46,21 +48,25 @@ describe('portfolio content', () => {
 
   it('provides concise job-search packaging materials', () => {
     expect(resumeBullets).toHaveLength(5)
-    expect(resumeBullets[0]).toContain('RMB 10,000-30,000')
+    expect(resumeBullets[0]).toContain('TikTok Shop / Shopee / Temu')
   })
 
-  it('recommends the operations case layout as the primary wireframe', () => {
+  it('recommends the assistant portfolio layout as the primary wireframe', () => {
     const recommended = wireframeOptions.find((option) => option.recommended)
 
-    expect(recommended?.id).toBe('operations-case')
-    expect(recommended?.sections).toContain('Go / Pivot / Stop 决策')
+    expect(recommended?.id).toBe('assistant-portfolio')
+    expect(recommended?.sections).toContain('案例 1：多平台 Listing 上架')
+  })
+
+  it('provides downloadable portfolio attachments', () => {
+    expect(portfolioAttachments.length).toBeGreaterThanOrEqual(4)
+    expect(portfolioAttachments.some((a) => a.href.includes('multi-platform-listing-guide'))).toBe(true)
   })
 
   it('provides realistic visual assets for the portfolio pages', () => {
     expect(portfolioVisuals).toHaveLength(4)
     expect(portfolioVisuals[0]).toMatchObject({
-      title: '夏季 hero SKU 场景',
-      alt: 'Cooling towels prepared for a summer outdoor kit',
+      title: '多平台 Listing 对照',
     })
     expect(portfolioVisuals.every((visual) => visual.imageUrl.startsWith('https://images.unsplash.com/'))).toBe(
       true,

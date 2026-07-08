@@ -1,59 +1,90 @@
-# Cross-Border Ecommerce Operations Portfolio Job Pack
+# Cross-Border Ecommerce Operations Assistant Portfolio Job Pack
 
 ## Portfolio Positioning
 
-跨境电商 / 独立站运营作品集：美国市场轻量生活方式产品独立站 MVP 验证项目。
+跨境电商运营助理作品集：多平台（TikTok Shop / Shopee / Temu / Lazada）日常运营执行练习项目。
 
-This portfolio is not only a storefront demo. It shows the operating logic behind a 4-8 week validation cycle: market choice, SKU priority, supplier validation, SaaS storefront setup, traffic testing, and Go / Pivot / Stop review.
+This portfolio shows assistant-level deliverables: multi-platform Listing packs, daily/weekly reports, review response SOPs, and an operations dashboard — not independent-store strategy ownership.
+
+**Data disclaimer**: All metrics are simulated for job-search demonstration.
 
 ## Resume Project Bullets
 
-- 规划 RMB 10,000-30,000 预算的美国独立站 MVP，拆解 4-8 周验证路径，覆盖选品、供应商、建站、投放和复盘。
-- 建立 6 个候选 SKU 评分卡，从视觉演示、毛利、履约、退货、合规风险维度筛选首批测试产品。
-- 设计供应商询盘和样品验证表，明确 MOQ、重量尺寸、包装、英文标签、合规文件和售后规则等关键字段。
-- 输出独立站页面 brief，覆盖首页、商品页、支付、物流政策、退换货、FAQ、像素和测试订单清单。
-- 制定 14 天 TikTok organic + 小预算 paid ads 测试节奏，并用 Go / Pivot / Stop 框架约束投放决策。
+- 协助完成美国市场生活方式品类 30 SKU 的多平台 Listing 资料整理，输出 TikTok Shop / Shopee / Temu 三平台标题、卖点、类目与定价对照表。
+- 搭建运营日报/周报模板，跟踪各平台曝光、点击、加购、订单、退款指标，识别低库存 SKU 并提交补货建议。
+- 整理供应商询盘与样品验证表（MOQ、重量尺寸、包装、合规文件），协助完成 3 个 hero SKU 的上架前资料校验。
+- 处理 TikTok / 独立站评论 inbox，按物流/质量/尺寸分类并撰写英文回复，建立差评 escalation 规则。
+- 参与 14 天流量测试数据录入与可视化看板维护，协助主管判断创意与页面瓶颈。
 
 ## 60-Second Interview Pitch
 
-我做了一个面向跨境电商运营岗位的独立站 MVP 作品集，假设目标市场是美国，预算 RMB 10,000-30,000，周期 4-8 周。项目不是单纯搭页面，而是完整跑一遍运营闭环：先用评分卡筛选轻物流、强视频演示、低合规风险的 SKU，再用供应商表验证样品、包装、物流和文件，然后规划 Shopify/SaaS 独立站页面、支付、政策和像素，最后设计 TikTok organic 加小预算广告的 14 天测试节奏，并用 Go / Pivot / Stop 框架决定是否继续投入。
+我做了一个淘酥酥跨境生活方式品牌的运营助理作品集。核心不是搭网站，而是展示我能不能协助团队把同一批 SKU 在多平台上架、跟数、回评。案例一：我把 cooling towel 和 pet hair remover 两个 SKU 分别做了 TikTok Shop、Shopee、Temu 的 Listing 包，包括标题、卖点、类目选择和定价逻辑，并做了平台差异对照表。案例二：我搭建了日报周报模板和运营看板，每天跟踪各平台 GMV、订单、退款和低库存，周报里会标 Top SKU 和待跟进事项。案例三：我整理了评论 inbox 的英文回复 SOP，按物流、质量、尺寸分类，并写了 5 组差评回复样例。在线 Demo 可以点开看商城和运营看板，附件可以下载 CSV 和 SOP。我的优势是细节执行和数据整理，能在主管定方向后快速落地。
 
 ## 3-Minute Interview Pitch
 
-这个项目的目标是证明我能用运营视角拆解一个跨境独立站从 0 到 1 的验证过程。我先确定美国市场，因为它有成熟的 DTC 消费习惯和较清晰的广告测试路径；品类选择轻量生活方式产品，因为它们更适合短视频演示，也能降低物流和退货风险。
+这个作品集的目标是证明我能胜任跨境电商运营助理的多平台日常执行。我先以淘酥酥 30 个生活方式 SKU 为练习场景，因为这类产品轻物流、适合短视频演示，也便于做多平台 Listing 对照。
 
-选品阶段我建立了 SKU 优先级，cooling towel、pet hair remover、heatless curl set、packing cubes 是首轮候选，neck fan 因电池合规风险暂停，acrylic organizer 因破损和体积重风险降级。
+第一个案例是多平台上架：同一款 cooling towel 在 TikTok Shop 要突出 9:16 视频 hook 和合规声明，Shopee 要填类目路径和运费模板，Temu 要报供货价和包装清单，我把这些差异整理成对照表。
 
-供应链阶段我设计了询盘模板和验证表，重点拿到重量尺寸、MOQ、生产周期、包装、英文标签、合规文件和售后承诺。建站阶段我把页面重点放在 5 秒内讲清价值、商品页演示、真实物流政策、支付信任和像素验证。
+第二个案例是日报周报：我每天记录各平台曝光、点击、加购、订单和退款，周报汇总 GMV 对比、Top SKU 和低库存预警，并列出待跟进事项给主管。
 
-投放阶段我限制首轮只跑 TikTok organic 和一个小预算付费渠道，避免变量过多；每天记录漏斗数据，根据点击、加购、结账、购买和评论判断问题。最后用 Go / Pivot / Stop 框架决定是否继续投入，避免因为已经花时间搭站就情绪化加预算。
+第三个案例是客服：我把评论按物流、质量、尺寸分类，写了英文回复模板，并标注哪些情况需要 escalation。所有数据都是模拟练习项目，但 SOP 和模板是我自己搭的。在线 Demo 有商城和运营看板，附件可以下载验证过程。
 
-## Deep-Dive Questions
+## Deep-Dive Questions (Assistant Role — 8 题)
 
-### 为什么首轮不同时跑多个渠道？
+### TikTok Shop 和 Shopee 上架有什么区别？
 
-MVP 的核心是隔离变量。首轮同时跑 Meta、TikTok、Google Shopping、SEO 和达人，会很难判断到底是产品、创意、页面、offer 还是渠道有问题。
+TikTok 偏短视频内容和 9:16 封面，字段含合规声明；Shopee 偏类目路径、变体、运费模板和图文详情，物流模式也不同。助理要把同一 SKU 拆成两套字段包。
 
-### 为什么暂停 USB-C neck fan？
+### 日报/周报你发给主管看什么？
 
-它有电池合规风险。供应商必须先提供 MSDS/SDS、UN38.3、battery specification、COC、安全标识照片和英文安全说明，否则不适合作为首轮库存。
+GMV、订单量、退款率、Top SKU、低库存预警和当天异常事项；周报再加各平台对比和待跟进清单。
 
-### 有点击但没加购怎么办？
+### 遇到英文差评你怎么回？
 
-优先检查商品页主图/视频、价格、offer、shipping clarity、FAQ、评论反馈和产品本身需求，不直接加预算。
+先分类（物流/质量/尺寸/恶意），选对应模板回复，涉及退款或产品质量问题 escalation 给主管。
 
-### 有加购但支付少怎么办？
+### 库存低了你怎么处理？
 
-优先检查最终运费、支付方式、结账信任、政策可见性、折扣逻辑和移动端结账体验。
+查安全库存线 → 核对供应商交期 → 通知主管 → 必要时调低前台库存或暂停投放。
 
-### 什么情况下停止？
+### 大促前你要做什么？
 
-如果多个可信创意没有带来有效产品页互动，页面改善后仍无加购，供应商/合规/物流风险无法在 MVP 预算内解决，或毛利无法覆盖广告、退款和客服成本，就停止或换 SKU。
+活动报名、库存确认、Listing 标题/主图检查、优惠券设置、运费模板核对。
+
+### 同一产品三个平台价格为什么不同？
+
+平台佣金、物流成本、竞品定价和活动策略不同；Temu 还要考虑供货价与前台价差。
+
+### 你怎么整理供应商给的资料？
+
+用 CSV 标准化 MOQ、packed weight、dimensions、合规文件状态，缺字段不上架。
+
+### 没经验的部分你怎么补？
+
+诚实说明是模拟练习项目，强调 SOP、模板和对照表是自己搭建的执行能力证明。
 
 ## Recommended Portfolio Carrier
 
-推荐承载形式：React 作品集站 + 原始 Markdown/CSV 附件。
+推荐承载形式：React 作品集站 + public/portfolio/ 附件下载。
 
-- React 作品集站负责让招聘方快速浏览：定位、案例页、布局方案、简历话术、商城 demo。
-- 原始 Markdown/CSV 附件负责证明过程：选品、供应商验证、站点 brief、投放计划、数据 tracker、复盘框架。
-- Notion/飞书可以作为备份投递链接，但不作为主承载，因为当前 React 项目已经能展示页面能力和业务理解。
+- React 作品集页：岗位定位、三大案例、附件下载、Demo 入口
+- Markdown/CSV 附件：Listing 样稿、日/周报、评论 SOP、流量 tracker
+- PDF 一页纸：portfolio-one-pager.md 导出后随简历投递
+
+## Attachment Index
+
+| File | Purpose |
+|------|---------|
+| `public/portfolio/multi-platform-listing-guide.md` | 三平台 Listing 样稿 + 差异对照 |
+| `public/portfolio/daily-weekly-ops-report-template.md` | 日/周报模板 + 7 天示例 |
+| `public/portfolio/cs-review-response-sop.md` | 评论分类 + 英文回复 |
+| `public/portfolio/cross-border-mvp-traffic-tracker.csv` | 流量追踪表 |
+| `public/portfolio/portfolio-one-pager.md` | 投递一页纸摘要 |
+
+## Deploy Checklist
+
+1. `npm run build && npm run test`
+2. Push to GitHub → GitHub Pages auto-deploy (`.github/workflows/deploy-pages.yml`)
+3. Or Netlify Drop: drag `dist/` folder
+4. Add live URL to resume and portfolio-one-pager.md

@@ -1,0 +1,9 @@
+date,channel,campaign,sku,creative_angle,spend_usd,impressions,clicks,ctr,cpc_usd,product_page_views,add_to_carts,add_to_cart_rate,checkout_starts,checkout_rate,purchases,purchase_rate,revenue_usd,aov_usd,estimated_cogs_usd,estimated_fulfillment_usd,estimated_payment_fee_usd,ad_cost_per_purchase_usd,estimated_contribution_usd,refunds,refund_reason,comments_signal,next_decision
+2026-06-28,TikTok Shop organic,cooling_towel_mvp,Cooling towel 4-pack with pouch,wet_snap_demo,0,8200,412,5.0,0,380,28,7.4,14,50.0,6,42.9,119.94,19.99,42.00,18.00,4.80,0,55.14,0,,positive hook,Continue
+2026-06-28,Shopee organic,pet_hair_remover_mvp,Reusable pet hair remover,sofa_before_after,0,3100,186,6.0,0,172,12,7.0,6,50.0,3,50.0,56.97,18.99,18.00,9.00,2.28,0,27.69,1,size inquiry,Track
+2026-06-29,TikTok Shop paid,cooling_towel_mvp,Cooling towel 4-pack with pouch,summer_go_bag,35,9100,455,5.0,0.08,420,32,7.6,16,50.0,7,43.8,139.93,19.99,49.00,21.00,5.60,5.00,39.73,0,,strong ATC,Continue
+2026-06-30,TikTok Shop organic,pet_hair_remover_mvp,Reusable pet hair remover,car_seat_cleanup,0,7600,380,5.0,0,350,22,6.3,10,45.5,5,50.0,99.95,19.99,35.00,15.00,4.00,0,45.95,1,slow shipping,Reply + track
+2026-07-01,Temu platform,temu_summer,temu cooling towel bundle,platform_promo,0,12400,620,5.0,0,580,18,3.1,8,44.4,4,50.0,71.96,17.99,28.00,12.00,2.88,0,29.08,0,,platform traffic,Continue
+2026-07-02,Meta paid,cooling_towel_mvp,Cooling towel 4-pack with pouch,gym_bag_essentials,25,5400,270,5.0,0.09,240,15,6.3,7,46.7,3,42.9,59.97,19.99,21.00,9.00,2.40,8.33,27.57,0,,low volume,Test
+2026-07-03,TikTok Shop organic,heatless_curl_mvp,Heatless satin curl set,overnight_result,0,8800,440,5.0,0,400,26,6.5,9,34.6,5,55.6,99.95,19.99,35.00,15.00,4.00,0,45.95,0,,long dwell,Pivot listing
+2026-07-04,TikTok Shop paid,cooling_towel_mvp,Cooling towel 4-pack with pouch,beach_day_pack,40,11100,555,5.0,0.07,510,38,7.5,18,47.4,9,50.0,179.91,19.99,63.00,27.00,7.20,4.44,102.27,0,,weekend peak,Continue

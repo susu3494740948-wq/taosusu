@@ -1,5 +1,5 @@
 export const trafficFunnel = {
-  period: '最近 14 天测试',
+  period: '最近 14 天测试（模拟数据）',
   impressions: 48200,
   clicks: 2140,
   ctr: 4.4,
@@ -15,6 +15,68 @@ export const trafficFunnel = {
   averageOrderValue: 22.93,
   estimatedMargin: 28.4,
 }
+
+export type PlatformId = 'tiktok' | 'shopee' | 'temu' | 'all'
+
+export interface PlatformMetrics {
+  id: PlatformId
+  label: string
+  gmv: number
+  orders: number
+  averageOrderValue: number
+  refundRate: number
+  impressions: number
+  clicks: number
+  addToCarts: number
+  adSpend: number
+  topSku: string
+  note: string
+}
+
+export const platformBreakdown: PlatformMetrics[] = [
+  {
+    id: 'tiktok',
+    label: 'TikTok Shop',
+    gmv: 919.54,
+    orders: 46,
+    averageOrderValue: 19.99,
+    refundRate: 2.2,
+    impressions: 48200,
+    clicks: 2140,
+    addToCarts: 96,
+    adSpend: 280,
+    topSku: 'Cooling Towel 4-Pack',
+    note: 'Hero SKU 视频 CTR 稳定，继续维护创意',
+  },
+  {
+    id: 'shopee',
+    label: 'Shopee',
+    gmv: 417.79,
+    orders: 21,
+    averageOrderValue: 19.89,
+    refundRate: 4.8,
+    impressions: 18600,
+    clicks: 1116,
+    addToCarts: 54,
+    adSpend: 0,
+    topSku: 'Pet Hair Remover',
+    note: '满减活动生效，关注尺寸咨询转化',
+  },
+  {
+    id: 'temu',
+    label: 'Temu',
+    gmv: 612.66,
+    orders: 34,
+    averageOrderValue: 18.02,
+    refundRate: 2.9,
+    impressions: 62400,
+    clicks: 3120,
+    addToCarts: 72,
+    adSpend: 0,
+    topSku: 'Cooling Towel 4-Pack',
+    note: '平台活动流量上升，跟踪供货价与库存',
+  },
+]
 
 export const channelPerformance = [
   { channel: 'TikTok Organic', spend: 0, clicks: 980, purchases: 7, revenue: 149.93 },

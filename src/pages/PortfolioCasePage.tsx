@@ -2,32 +2,50 @@ import {
   caseStudySections,
   executionTimeline,
   interviewScripts,
+  portfolioAttachments,
   portfolioSummary,
   portfolioVisuals,
   resumeBullets,
   wireframeOptions,
 } from '../data/portfolio'
 
-export function PortfolioCasePage() {
+interface PortfolioCasePageProps {
+  onNavigateDemo?: () => void
+  onNavigateAdmin?: () => void
+  onNavigateReviews?: () => void
+}
+
+export function PortfolioCasePage({
+  onNavigateDemo,
+  onNavigateAdmin,
+  onNavigateReviews,
+}: PortfolioCasePageProps) {
   const recommendedWireframe = wireframeOptions.find((option) => option.recommended) ?? wireframeOptions[0]
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section className="rounded-[2rem] bg-stone-950 p-8 text-white sm:p-10">
         <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-300">
-          Cross-border operations portfolio
+          Cross-border operations assistant portfolio
         </p>
         <h2 className="mt-4 max-w-4xl text-4xl font-black tracking-tight sm:text-5xl">
-          4-8 周独立站 MVP 验证案例
+          多平台运营助理作品集
         </h2>
         <p className="mt-5 max-w-3xl text-lg leading-8 text-stone-300">
-          {portfolioSummary.positioning}，面向{portfolioSummary.targetRole}岗位，展示从市场选择、
-          选品、供应商验证、独立站搭建、流量测试到数据复盘的完整运营闭环。
+          {portfolioSummary.positioning}，面向{portfolioSummary.targetRole}岗位，展示 Listing 上架、
+          日报周报、评论处理与数据整理等日常运营交付能力。所有业务数据均为模拟练习项目。
         </p>
+        <div className="mt-6 flex flex-wrap gap-2">
+          {portfolioSummary.platforms.map((platform) => (
+            <span key={platform} className="rounded-full bg-emerald-400/20 px-4 py-1.5 text-sm font-bold text-emerald-200">
+              {platform}
+            </span>
+          ))}
+        </div>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {[
             ['目标市场', portfolioSummary.targetMarket],
-            ['预算范围', portfolioSummary.budget],
+            ['练习预算', portfolioSummary.budget],
             ['验证周期', portfolioSummary.timeline],
           ].map(([label, value]) => (
             <div key={label} className="rounded-3xl bg-white/10 p-5">
@@ -36,26 +54,85 @@ export function PortfolioCasePage() {
             </div>
           ))}
         </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          {onNavigateDemo ? (
+            <button
+              type="button"
+              onClick={onNavigateDemo}
+              className="rounded-full bg-emerald-400 px-6 py-3 text-sm font-black text-stone-950 transition hover:bg-emerald-300"
+            >
+              进入商城 Demo →
+            </button>
+          ) : null}
+          {onNavigateAdmin ? (
+            <button
+              type="button"
+              onClick={onNavigateAdmin}
+              className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
+            >
+              运营看板 →
+            </button>
+          ) : null}
+          {onNavigateReviews ? (
+            <button
+              type="button"
+              onClick={onNavigateReviews}
+              className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
+            >
+              评论 Inbox →
+            </button>
+          ) : null}
+        </div>
       </section>
 
-      <section className="mt-10 grid gap-4 md:grid-cols-3">
+      <section className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
         {portfolioSummary.capabilities.map((capability) => (
           <div key={capability} className="rounded-3xl border border-stone-200 bg-white p-5">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-stone-500">Capability</p>
-            <h3 className="mt-2 text-xl font-black text-stone-950">{capability}</h3>
+            <h3 className="mt-2 text-lg font-black text-stone-950">{capability}</h3>
           </div>
         ))}
+      </section>
+
+      <section className="mt-14 rounded-[2rem] border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-700">Attachments</p>
+            <h2 className="mt-2 text-3xl font-black text-stone-950">附件下载区</h2>
+          </div>
+          <p className="max-w-xl text-sm leading-6 text-stone-600">
+            招聘方可直接下载 Markdown / CSV 原文，验证「不是 PPT 空话」。所有数据标注为模拟练习项目。
+          </p>
+        </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {portfolioAttachments.map((attachment) => (
+            <a
+              key={attachment.id}
+              href={attachment.href}
+              download
+              className="group rounded-3xl border border-emerald-200 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800">
+                  {attachment.format}
+                </span>
+                <span className="text-emerald-600 opacity-0 transition group-hover:opacity-100">下载 ↓</span>
+              </div>
+              <h3 className="mt-4 font-black text-stone-950">{attachment.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-stone-600">{attachment.description}</p>
+            </a>
+          ))}
+        </div>
       </section>
 
       <section className="mt-14 rounded-[2rem] bg-white p-6 sm:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.3em] text-stone-500">Visual proof board</p>
-            <h2 className="mt-2 text-3xl font-black text-stone-950">真实图片感的项目素材墙</h2>
+            <h2 className="mt-2 text-3xl font-black text-stone-950">案例素材墙</h2>
           </div>
           <p className="max-w-xl text-sm leading-6 text-stone-600">
-            用生活方式图片和看板图片模拟真实独立站素材，让招聘方先看到“产品怎么卖、内容怎么拍、
-            数据怎么复盘”。
+            Listing 对照、日报录入、评论处理 — 运营助理最核心的三类日常交付。
           </p>
         </div>
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -74,10 +151,9 @@ export function PortfolioCasePage() {
       <section className="mt-14">
         <div className="max-w-3xl">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-stone-500">Case narrative</p>
-          <h2 className="mt-2 text-3xl font-black text-stone-950">核心案例页结构</h2>
+          <h2 className="mt-2 text-3xl font-black text-stone-950">三大核心案例</h2>
           <p className="mt-3 text-stone-600">
-            这页按照运营岗位最关心的业务顺序展开：先讲验证目标，再讲选品依据、供应商控制、
-            站点转化、流量测试和最终决策。
+            按招聘方优先级排列：多平台 Listing → 日报周报 → 评论处理，辅以供应商整理与 Demo 展示。
           </p>
         </div>
         <div className="mt-8 grid gap-5">
@@ -92,7 +168,7 @@ export function PortfolioCasePage() {
                 </div>
               </div>
               <p className="mt-4 max-w-4xl leading-7 text-stone-600">{section.summary}</p>
-              <ul className="mt-5 grid gap-3 text-sm text-stone-700 md:grid-cols-3">
+              <ul className="mt-5 grid gap-3 text-sm text-stone-700 md:grid-cols-2">
                 {section.proofPoints.map((point) => (
                   <li key={point} className="rounded-2xl bg-stone-100 p-4">
                     {point}
@@ -120,7 +196,7 @@ export function PortfolioCasePage() {
 
       <section className="mt-14 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-[2rem] bg-stone-950 p-6 text-white sm:p-8">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-300">Visual wireframe</p>
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-emerald-300">Recommended layout</p>
           <h2 className="mt-2 text-3xl font-black">推荐布局方案</h2>
           <p className="mt-4 text-stone-300">{recommendedWireframe.description}</p>
           <div className="mt-6 rounded-3xl bg-white/10 p-5">
@@ -137,24 +213,39 @@ export function PortfolioCasePage() {
           </div>
         </div>
         <div className="rounded-[2rem] border border-stone-200 bg-white p-6 sm:p-8">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-stone-500">Implementation choice</p>
-          <h2 className="mt-2 text-3xl font-black text-stone-950">推荐承载形式：React 作品集站</h2>
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-stone-500">Live demo</p>
+          <h2 className="mt-2 text-3xl font-black text-stone-950">在线 Demo 入口</h2>
           <p className="mt-4 leading-7 text-stone-600">
-            当前项目已经有商品列表、详情、购物车、结账和运营看板，最适合改造成“作品集站 + 独立站 demo”
-            的组合。React 页面负责快速展示运营逻辑，原始 Markdown/CSV 材料保留为过程证据。
+            React 作品集站 + 淘酥酥商城 Demo + 运营看板，展示前台体验理解与后台日常维护能力。
           </p>
-          <div className="mt-6 grid gap-3">
-            {wireframeOptions.map((option) => (
-              <div key={option.id} className="rounded-2xl bg-stone-100 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-black text-stone-950">{option.title}</h3>
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-stone-600">
-                    {option.recommended ? 'Recommended' : 'Backup'}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm leading-6 text-stone-600">{option.description}</p>
-              </div>
-            ))}
+          <div className="mt-6 flex flex-wrap gap-3">
+            {onNavigateDemo ? (
+              <button
+                type="button"
+                onClick={onNavigateDemo}
+                className="rounded-full bg-stone-950 px-6 py-3 text-sm font-black text-white"
+              >
+                商城 Demo
+              </button>
+            ) : null}
+            {onNavigateAdmin ? (
+              <button
+                type="button"
+                onClick={onNavigateAdmin}
+                className="rounded-full border border-stone-200 px-6 py-3 text-sm font-black text-stone-950"
+              >
+                运营看板
+              </button>
+            ) : null}
+            {onNavigateReviews ? (
+              <button
+                type="button"
+                onClick={onNavigateReviews}
+                className="rounded-full border border-stone-200 px-6 py-3 text-sm font-black text-stone-950"
+              >
+                评论 Inbox
+              </button>
+            ) : null}
           </div>
         </div>
       </section>
@@ -175,7 +266,7 @@ export function PortfolioCasePage() {
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-stone-500">Interview script</p>
           <h2 className="mt-2 text-3xl font-black text-stone-950">60 秒面试讲述</h2>
           <p className="mt-5 leading-7 text-stone-600">{interviewScripts.sixtySeconds}</p>
-          <h3 className="mt-8 font-black text-stone-950">可被追问的问题</h3>
+          <h3 className="mt-8 font-black text-stone-950">高频追问备料</h3>
           <ul className="mt-4 space-y-3 text-sm leading-6 text-stone-700">
             {interviewScripts.deepDiveQuestions.map((question) => (
               <li key={question} className="rounded-2xl bg-stone-100 p-4">

@@ -18,6 +18,7 @@ import type { Product } from '../types'
 interface HomePageProps {
   products: Product[]
   onNavigateCategories: () => void
+  onNavigatePortfolio: () => void
   onSelectProduct: (productId: string) => void
   onAddToCart: (product: Product) => void
 }
@@ -36,6 +37,7 @@ const categoryLabels: Record<string, string> = {
 export function HomePage({
   products,
   onNavigateCategories,
+  onNavigatePortfolio,
   onSelectProduct,
   onAddToCart,
 }: HomePageProps) {
@@ -52,6 +54,26 @@ export function HomePage({
 
   return (
     <main>
+      <section className="border-b border-emerald-200 bg-gradient-to-r from-emerald-50 to-stone-50">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
+              跨境电商运营助理 · 多平台作品集
+            </p>
+            <p className={`mt-1 text-sm font-bold sm:text-base ${theme.heading}`}>
+              TikTok Shop · Shopee · Temu · Lazada — 模拟练习项目
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onNavigatePortfolio}
+            className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-black ${theme.primaryBtn}`}
+          >
+            查看作品集案例 →
+          </button>
+        </div>
+      </section>
+
       <section className={`relative overflow-hidden ${theme.hero}`}>
         <img
           src={heroImageUrl}

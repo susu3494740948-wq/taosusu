@@ -12,6 +12,7 @@ import type { Category, Product } from '../types'
 interface ProductDetailPageProps {
   product: Product
   customProducts: Product[]
+  delistedProductIds?: string[]
   onBack: () => void
   onNavigateHome: () => void
   onBrowseCategory: (category: Category) => void
@@ -22,13 +23,14 @@ interface ProductDetailPageProps {
 export function ProductDetailPage({
   product,
   customProducts,
+  delistedProductIds = [],
   onBack,
   onNavigateHome,
   onBrowseCategory,
   onSelectProduct,
   onAddToCart,
 }: ProductDetailPageProps) {
-  const relatedProducts = getCatalogRelatedProducts(product, customProducts)
+  const relatedProducts = getCatalogRelatedProducts(product, customProducts, delistedProductIds)
   const showCompareAtPrice = usePreferencesStore((state) => state.showCompareAtPrice)
   const showReviewStars = usePreferencesStore((state) => state.showReviewStars)
   const currencyFormat = usePreferencesStore((state) => state.currencyFormat)

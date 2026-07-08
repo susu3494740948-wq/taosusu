@@ -14,6 +14,7 @@ interface HeaderProps {
   onNavigate: (
     page:
       | 'home'
+      | 'portfolio'
       | 'categories'
       | 'checkout'
       | 'admin'
@@ -41,6 +42,7 @@ export function Header({
   const cartCount = useCartStore(selectCartCount)
   const storeConfig = useSiteContentStore(selectStoreConfig)
   const navItems = [
+    { label: '作品集', page: 'portfolio' as const },
     { label: 'Home', page: 'home' as const },
     { label: '商品分类', page: 'categories' as const },
     { label: '运营中心', page: 'admin' as const },

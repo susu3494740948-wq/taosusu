@@ -26,10 +26,12 @@ import { UploadProductPage } from './pages/UploadProductPage'
 import { UserAccountPage } from './pages/UserAccountPage'
 import { CustomerBlogPage } from './pages/CustomerBlogPage'
 import { BlogEditorPage } from './pages/BlogEditorPage'
+import { PortfolioCasePage } from './pages/PortfolioCasePage'
 import { useBlogStore } from './store/blogStore'
 
 type Page =
   | 'home'
+  | 'portfolio'
   | 'categories'
   | 'detail'
   | 'checkout'
@@ -52,9 +54,10 @@ export default function App() {
   const autoApplySavedPromo = usePreferencesStore((state) => state.autoApplySavedPromo)
   const savedPromoCode = usePreferencesStore((state) => state.savedPromoCode)
   const customProducts = useProductStore((state) => state.customProducts)
+  const delistedProductIds = useProductStore((state) => state.delistedProductIds)
   const catalogProducts = useMemo(
-    () => mergeCatalogProducts(customProducts),
-    [customProducts],
+    () => mergeCatalogProducts(customProducts, delistedProductIds),
+    [customProducts, delistedProductIds],
   )
   const [page, setPage] = useState<Page>('home')
   const [selectedProductId, setSelectedProductId] = useState(baseProducts[0].id)
@@ -65,9 +68,11 @@ export default function App() {
   const [detailReturnPage, setDetailReturnPage] = useState<'home' | 'categories' | 'reviews' | 'blog'>('home')
 
   const selectedProduct =
-    getCatalogProductById(selectedProductId, customProducts) ?? catalogProducts[0] ?? baseProducts[0]
+    getCatalogProductById(selectedProductId, customProducts, delistedProductIds) ??
+    catalogProducts[0] ??
+    baseProducts[0]
   const showMobileNav =
-    page !== 'checkout' && page !== 'success' && page !== 'detail'
+    page !== 'checkout' && page !== 'success' && page !== 'detail' && page !== 'portfolio'
 
   usePreferencesEffect()
 
@@ -149,6 +154,7 @@ export default function App() {
         <ProductDetailPage
           product={selectedProduct}
           customProducts={customProducts}
+          delistedProductIds={delistedProductIds}
           onBack={() => navigate(detailReturnPage)}
           onNavigateHome={() => navigate('home')}
           onBrowseCategory={browseCategory}
@@ -216,11 +222,21 @@ export default function App() {
     if (page === 'account') {
       return <UserAccountPage onNavigateShop={() => navigate('home')} onSelectProduct={selectProduct} />
     }
+    if (page === 'portfolio') {
+      return (
+        <PortfolioCasePage
+          onNavigateDemo={() => navigate('home')}
+          onNavigateAdmin={() => navigate('admin')}
+          onNavigateReviews={() => navigate('reviews')}
+        />
+      )
+    }
 
     return (
       <HomePage
         products={catalogProducts}
         onNavigateCategories={() => navigate('categories')}
+        onNavigatePortfolio={() => navigate('portfolio')}
         onSelectProduct={selectProduct}
         onAddToCart={addProductToCart}
       />

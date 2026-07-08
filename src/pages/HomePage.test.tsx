@@ -9,6 +9,7 @@ describe('HomePage', () => {
       <HomePage
         products={products}
         onNavigateCategories={vi.fn()}
+        onNavigatePortfolio={vi.fn()}
         onSelectProduct={vi.fn()}
         onAddToCart={vi.fn()}
       />,

@@ -9,7 +9,7 @@ vi.mock('../lib/compressImage', () => ({
 
 describe('UploadProductPage', () => {
   it('renders upload form and publishes a custom product', async () => {
-    useProductStore.setState({ customProducts: [], cloudLoaded: true, cloudSyncError: null })
+    useProductStore.setState({ customProducts: [], delistedProductIds: [], cloudLoaded: true, cloudSyncError: null })
 
     render(<UploadProductPage onNavigateAdmin={vi.fn()} onViewProduct={vi.fn()} />)
 
@@ -25,7 +25,7 @@ describe('UploadProductPage', () => {
     fireEvent.click(screen.getByRole('button', { name: '确认上架' }))
 
     await waitFor(() => {
-      expect(screen.getByText(/已上架/)).toBeInTheDocument()
+      expect(screen.getByText(/在售商品/)).toBeInTheDocument()
     })
     expect(useProductStore.getState().customProducts[0]?.name).toBe('Uploaded Demo Towel')
   })

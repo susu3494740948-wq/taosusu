@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { fetchCloudProductsResult, syncProductsToGitHub } from '../lib/cloudCatalog'
+import { useCartStore } from './cartStore'
 import { usePreferencesStore } from './preferencesStore'
 import type { Product } from '../types'
 
 interface ProductState {
   customProducts: Product[]
+  delistedProductIds: string[]
   cloudLoaded: boolean
   cloudSyncError: string | null
   setCustomProducts: (products: Product[]) => void
@@ -13,6 +15,9 @@ interface ProductState {
   addProduct: (product: Product) => Promise<void>
   updateProduct: (product: Product) => Promise<void>
   removeProduct: (productId: string) => Promise<void>
+  delistProduct: (productId: string) => void
+  relistProduct: (productId: string) => void
+  isDelisted: (productId: string) => boolean
 }
 
 function sortProducts(products: Product[]): Product[] {
@@ -35,6 +40,7 @@ export const useProductStore = create<ProductState>()(
   persist(
     (set, get) => ({
       customProducts: [],
+      delistedProductIds: [],
       cloudLoaded: false,
       cloudSyncError: null,
 
@@ -58,7 +64,8 @@ export const useProductStore = create<ProductState>()(
           product,
           ...get().customProducts.filter((item) => item.id !== product.id),
         ])
-        set({ customProducts })
+        const delistedProductIds = get().delistedProductIds.filter((id) => id !== product.id)
+        set({ customProducts, delistedProductIds })
         const syncError = await pushToCloud(customProducts)
         set({ cloudSyncError: syncError })
       },
@@ -67,17 +74,33 @@ export const useProductStore = create<ProductState>()(
         const customProducts = sortProducts(
           get().customProducts.map((item) => (item.id === product.id ? product : item)),
         )
-        set({ customProducts })
+        const delistedProductIds = get().delistedProductIds.filter((id) => id !== product.id)
+        set({ customProducts, delistedProductIds })
         const syncError = await pushToCloud(customProducts)
         set({ cloudSyncError: syncError })
       },
 
       removeProduct: async (productId) => {
         const customProducts = get().customProducts.filter((product) => product.id !== productId)
-        set({ customProducts })
+        const delistedProductIds = get().delistedProductIds.filter((id) => id !== productId)
+        set({ customProducts, delistedProductIds })
         const syncError = await pushToCloud(customProducts)
         set({ cloudSyncError: syncError })
       },
+
+      delistProduct: (productId) => {
+        if (get().delistedProductIds.includes(productId)) return
+        set({ delistedProductIds: [...get().delistedProductIds, productId] })
+        useCartStore.getState().removeItem(productId)
+      },
+
+      relistProduct: (productId) => {
+        set({
+          delistedProductIds: get().delistedProductIds.filter((id) => id !== productId),
+        })
+      },
+
+      isDelisted: (productId) => get().delistedProductIds.includes(productId),
     }),
     {
       name: 'taosusu-custom-products',
