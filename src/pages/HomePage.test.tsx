@@ -24,6 +24,6 @@ describe('HomePage', () => {
     expect(screen.getAllByText(/SUMMER10/).length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cooling Towel 4-Pack').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Summer Comfort').length).toBeGreaterThan(0)
-    expect(screen.queryByText('淘酥酥', { selector: 'p' })).not.toBeInTheDocument()
+    expect(screen.getByText('本周主推')).toBeInTheDocument()
   })
 })

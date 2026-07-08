@@ -5,7 +5,7 @@ import { categoryMeta } from '../data/categoryMeta'
 import { categories } from '../data/products'
 import { baseProducts } from '../lib/catalog'
 import { heroImageUrl } from '../data/productPhotos'
-import { formatCurrency } from '../lib/formatters'
+import { formatCurrency, getDiscountPercent } from '../lib/formatters'
 import { theme } from '../lib/themeClasses'
 import {
   selectHomepageContent,
@@ -50,26 +50,54 @@ export function HomePage({
     [products, baseProductIds],
   )
   const bestSellers = products.slice(0, 8)
+  const featuredProduct = bestSellers[0]
   const lowestPrice = Math.min(...products.map((product) => product.price))
+
+  function renderHeroProductTile(product: Product) {
+    const discountPercent = getDiscountPercent(product.price, product.compareAtPrice)
+
+    return (
+      <button
+        type="button"
+        key={product.id}
+        onClick={() => onSelectProduct(product.id)}
+        className="group relative overflow-hidden rounded-2xl ring-1 ring-white/10 transition hover:ring-white/30 active:scale-[0.98] sm:rounded-3xl"
+      >
+        <ProductArtwork
+          image={product.image}
+          name={product.name}
+          customImageUrl={product.customImageUrl}
+          subtitle={product.category}
+          showBottomCaption
+        />
+        <div className="absolute right-2 top-2 flex flex-col items-end gap-1">
+          {discountPercent ? (
+            <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-black text-white">
+              -{discountPercent}%
+            </span>
+          ) : null}
+          <span className="rounded-full bg-stone-950/75 px-2.5 py-1 text-[11px] font-black text-white backdrop-blur-sm">
+            {formatCurrency(product.price, 'symbol')}
+          </span>
+        </div>
+      </button>
+    )
+  }
 
   return (
     <main>
-      <section className="border-b border-emerald-200 bg-gradient-to-r from-emerald-50 to-stone-50">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
-              跨境电商运营助理 · 多平台作品集
-            </p>
-            <p className={`mt-1 text-sm font-bold sm:text-base ${theme.heading}`}>
-              TikTok Shop · Shopee · Temu · Lazada — 模拟练习项目
-            </p>
-          </div>
+      <section className="border-b border-emerald-100 bg-emerald-50/70">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
+          <p className={`min-w-0 truncate text-xs font-semibold sm:text-sm ${theme.muted}`}>
+            <span className="font-black text-emerald-800">运营助理作品集</span>
+            <span className="hidden sm:inline"> · TikTok Shop / Shopee / Temu / Lazada</span>
+          </p>
           <button
             type="button"
             onClick={onNavigatePortfolio}
-            className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-black ${theme.primaryBtn}`}
+            className={`shrink-0 rounded-full border border-emerald-200 px-4 py-1.5 text-xs font-black sm:text-sm ${theme.secondaryBtn}`}
           >
-            查看作品集案例 →
+            作品集 →
           </button>
         </div>
       </section>
@@ -137,46 +165,30 @@ export function HomePage({
                 </button>
               </div>
 
+              <div className="home-scroll-row mt-5 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={onNavigateCategories}
+                    className="shrink-0 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold text-white/90 backdrop-blur-sm transition hover:bg-white/20"
+                  >
+                    {categoryLabels[category] ?? category}
+                  </button>
+                ))}
+              </div>
+
               <p className="mt-5 text-xs leading-6 text-white/65 sm:text-sm">
                 {storeConfig.processingDays} 处理 · {storeConfig.deliveryDays} 送达美国 · 支持 PayPal / 信用卡
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-2 sm:hidden">
-              {bestSellers.slice(0, 2).map((product) => (
-                <button
-                  type="button"
-                  key={product.id}
-                  onClick={() => onSelectProduct(product.id)}
-                  className="group overflow-hidden rounded-2xl ring-1 ring-white/10 transition active:scale-[0.98]"
-                >
-                  <ProductArtwork
-                    image={product.image}
-                    name={product.name}
-                    customImageUrl={product.customImageUrl}
-                    subtitle={product.category}
-                    showBottomCaption
-                  />
-                </button>
-              ))}
+              {bestSellers.slice(0, 2).map((product) => renderHeroProductTile(product))}
             </div>
 
             <div className="hidden sm:grid sm:grid-cols-2 sm:gap-3 lg:gap-4">
-              {bestSellers.slice(0, 4).map((product) => (
-                <button
-                  type="button"
-                  key={product.id}
-                  onClick={() => onSelectProduct(product.id)}
-                  className="group overflow-hidden rounded-3xl ring-1 ring-white/10 transition hover:ring-white/30"
-                >
-                  <ProductArtwork
-                    image={product.image}
-                    name={product.name}
-                    subtitle={product.category}
-                    showBottomCaption
-                  />
-                </button>
-              ))}
+              {bestSellers.slice(0, 4).map((product) => renderHeroProductTile(product))}
             </div>
           </div>
         </div>
@@ -239,6 +251,48 @@ export function HomePage({
           })}
         </div>
       </section>
+
+      {featuredProduct ? (
+        <section className={`border-b ${theme.border} ${theme.surface}`}>
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>Featured pick</p>
+                <h2 className={`mt-2 text-2xl font-black sm:text-3xl ${theme.heading}`}>本周主推</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => onSelectProduct(featuredProduct.id)}
+                className={`font-bold ${theme.accentText}`}
+              >
+                查看详情 →
+              </button>
+            </div>
+            <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
+              <button
+                type="button"
+                onClick={() => onSelectProduct(featuredProduct.id)}
+                className="group overflow-hidden rounded-[2rem] text-left ring-1 ring-stone-200 transition hover:ring-[var(--accent)]"
+              >
+                <ProductArtwork
+                  image={featuredProduct.image}
+                  name={featuredProduct.name}
+                  customImageUrl={featuredProduct.customImageUrl}
+                  showOverlay
+                />
+              </button>
+              <div className="flex flex-col justify-center">
+                <ProductCard
+                  product={featuredProduct}
+                  onSelect={onSelectProduct}
+                  onAddToCart={onAddToCart}
+                  variant="featured"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         <div className={`overflow-hidden rounded-[2rem] p-5 sm:p-8 ${theme.promoBanner}`}>
