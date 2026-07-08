@@ -61,4 +61,15 @@ describe('productStore', () => {
     expect(useProductStore.getState().isDelisted(baseId)).toBe(true)
     expect(useProductStore.getState().customProducts).toHaveLength(0)
   })
+
+  it('imports products in batch and replaces same sku', async () => {
+    const first = { ...sampleProduct, id: 'TTS-IMPORT-1', name: 'Import One' }
+    const second = { ...sampleProduct, id: 'TTS-IMPORT-2', name: 'Import Two' }
+    await useProductStore.getState().importProducts([first, second])
+    expect(useProductStore.getState().customProducts).toHaveLength(2)
+
+    const updatedFirst = { ...first, price: 24.99 }
+    await useProductStore.getState().importProducts([updatedFirst])
+    expect(useProductStore.getState().customProducts.find((item) => item.id === 'TTS-IMPORT-1')?.price).toBe(24.99)
+  })
 })

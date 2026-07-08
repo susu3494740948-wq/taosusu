@@ -12,6 +12,10 @@ import {
 } from '../lib/productForm'
 import { compressImageFile } from '../lib/compressImage'
 import { canSyncToCloud } from '../lib/cloudCatalog'
+import {
+  parseProductImportCsv,
+  parseProductImportPayload,
+} from '../lib/productImport'
 import { theme } from '../lib/themeClasses'
 import { useProductStore } from '../store/productStore'
 import { usePreferencesStore } from '../store/preferencesStore'
@@ -28,6 +32,7 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   const delistedProductIds = useProductStore((state) => state.delistedProductIds)
   const addProduct = useProductStore((state) => state.addProduct)
   const updateProduct = useProductStore((state) => state.updateProduct)
+  const importProducts = useProductStore((state) => state.importProducts)
   const removeProduct = useProductStore((state) => state.removeProduct)
   const delistProduct = useProductStore((state) => state.delistProduct)
   const relistProduct = useProductStore((state) => state.relistProduct)
@@ -44,6 +49,10 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [isRefreshingCloud, setIsRefreshingCloud] = useState(false)
+  const [importText, setImportText] = useState('')
+  const [importErrors, setImportErrors] = useState<string[]>([])
+  const [importWarnings, setImportWarnings] = useState<string[]>([])
+  const [isImporting, setIsImporting] = useState(false)
   const cloudSyncEnabled = canSyncToCloud(githubSyncToken)
   const isEditing = editingProduct !== null
 
@@ -127,6 +136,62 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
     }
   }
 
+  async function handleImportFile(file: File) {
+    const text = await file.text()
+    setImportText(text)
+    try {
+      const result = file.name.toLowerCase().endsWith('.csv')
+        ? parseProductImportCsv(text)
+        : parseProductImportPayload(JSON.parse(text))
+      setImportErrors(result.errors)
+      setImportWarnings(result.warnings)
+      if (result.errors.length === 0 && result.products.length > 0) {
+        setSuccessMessage(null)
+      }
+    } catch {
+      setImportErrors(['文件内容无法解析，请检查 JSON / CSV 格式'])
+      setImportWarnings([])
+    }
+  }
+
+  async function handleBulkImport() {
+    setImportErrors([])
+    setImportWarnings([])
+    setSuccessMessage(null)
+
+    let result
+    try {
+      const trimmed = importText.trim()
+      if (!trimmed) {
+        setImportErrors(['请粘贴 JSON / CSV，或上传导入文件'])
+        return
+      }
+      result = trimmed.startsWith('[') || trimmed.startsWith('{')
+        ? parseProductImportPayload(JSON.parse(trimmed))
+        : parseProductImportCsv(trimmed)
+    } catch {
+      setImportErrors(['文件内容无法解析，请检查 JSON / CSV 格式'])
+      return
+    }
+
+    setImportErrors(result.errors)
+    setImportWarnings(result.warnings)
+    if (result.errors.length > 0 || result.products.length === 0) return
+
+    setIsImporting(true)
+    try {
+      const { imported } = await importProducts(result.products)
+      setSuccessMessage(
+        cloudSyncEnabled
+          ? `已批量导入 ${imported} 个 SKU，并同步到云端。`
+          : `已批量导入 ${imported} 个 SKU。请在设置中配置 GitHub Token 以同步给所有访客。`,
+      )
+      setImportText('')
+    } finally {
+      setIsImporting(false)
+    }
+  }
+
   return (
     <main className={theme.pageMainNarrow}>
       <section className={`${theme.pageHero} ${theme.hero}`}>
@@ -173,6 +238,85 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
           </button>
         </div>
         {cloudSyncError ? <p className="mt-3 text-sm text-red-600">{cloudSyncError}</p> : null}
+      </section>
+
+      <section className={`mt-6 rounded-[2rem] border p-5 sm:p-8 ${theme.surface} ${theme.border}`}>
+        <p className={`text-sm font-bold uppercase tracking-[0.3em] ${theme.muted}`}>Bulk Import</p>
+        <h3 className={`mt-2 text-2xl font-black ${theme.heading}`}>批量搬品 / 改 SKU</h3>
+        <p className={`mt-3 text-sm leading-6 ${theme.muted}`}>
+          从其它平台整理商品资料后，用 JSON 或 CSV 一次性导入。每条记录可自定义 SKU（如{' '}
+          <code className="rounded bg-stone-100 px-1.5 py-0.5 text-xs">TTS-2026-001</code>
+          ）、主图 URL 和详情图 URL。请只导入你有权使用的图片与文案，不要直接抓取他人店铺。
+        </p>
+
+        <div className="mt-5 flex flex-wrap gap-3">
+          <a
+            href={`${import.meta.env.BASE_URL}portfolio/product-import-template.json`}
+            download
+            className={`rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn} border ${theme.border}`}
+          >
+            下载 JSON 模板
+          </a>
+          <a
+            href={`${import.meta.env.BASE_URL}portfolio/product-import-template.csv`}
+            download
+            className={`rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn} border ${theme.border}`}
+          >
+            下载 CSV 模板
+          </a>
+          <label className={`cursor-pointer rounded-full px-4 py-2 text-sm font-bold ${theme.secondaryBtn} border ${theme.border}`}>
+            上传 JSON / CSV
+            <input
+              type="file"
+              accept=".json,.csv,application/json,text/csv"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0]
+                if (!file) return
+                void handleImportFile(file).catch(() => {
+                  setImportErrors(['文件读取失败，请重试'])
+                })
+                event.target.value = ''
+              }}
+            />
+          </label>
+        </div>
+
+        <label className={`mt-5 block text-sm font-bold ${theme.heading}`} htmlFor="product-import-text">
+          粘贴导入内容
+        </label>
+        <textarea
+          id="product-import-text"
+          rows={10}
+          value={importText}
+          onChange={(event) => setImportText(event.target.value)}
+          className={`mt-2 w-full rounded-2xl px-4 py-3 font-mono text-xs ${theme.input}`}
+          placeholder={'[\n  {\n    "sku": "TTS-2026-001",\n    "name": "Portable Neck Fan",\n    "mainImageUrl": "https://...",\n    "detailImageUrls": ["https://..."]\n  }\n]'}
+        />
+
+        {importErrors.length > 0 ? (
+          <ul className="mt-4 space-y-1 text-sm text-red-600">
+            {importErrors.map((error) => (
+              <li key={error}>• {error}</li>
+            ))}
+          </ul>
+        ) : null}
+        {importWarnings.length > 0 ? (
+          <ul className="mt-4 space-y-1 text-sm text-amber-700">
+            {importWarnings.map((warning) => (
+              <li key={warning}>• {warning}</li>
+            ))}
+          </ul>
+        ) : null}
+
+        <button
+          type="button"
+          disabled={isImporting || !importText.trim()}
+          onClick={() => void handleBulkImport()}
+          className={`mt-5 min-h-12 rounded-full px-8 py-3 text-sm font-bold ${theme.primaryBtn} disabled:opacity-50`}
+        >
+          {isImporting ? '导入中…' : '确认批量导入'}
+        </button>
       </section>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
@@ -426,7 +570,9 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
                   />
                   <div className="min-w-0 flex-1">
                     <p className={`truncate font-bold ${theme.heading}`}>{product.name}</p>
-                    <p className={`mt-1 text-sm ${theme.muted}`}>{product.category}</p>
+                    <p className={`mt-1 text-sm ${theme.muted}`}>
+                      SKU {product.id} · {product.category}
+                    </p>
                     <p className={`mt-2 text-sm font-black ${theme.heading}`}>
                       {formatCurrency(product.price, currencyFormat)}
                       <span className={`ml-2 font-normal ${theme.muted}`}>库存 {product.stock}</span>
@@ -495,6 +641,7 @@ export function UploadProductPage({ onNavigateAdmin, onViewProduct }: UploadProd
                     <span className="mt-1 inline-block rounded-full bg-stone-200 px-2 py-0.5 text-xs font-bold text-stone-600">
                       已下架
                     </span>
+                    <p className={`mt-1 text-sm ${theme.muted}`}>SKU {product.id}</p>
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">

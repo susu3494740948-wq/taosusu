@@ -75,7 +75,10 @@ function buildSizeChartDataUrl(product: Product): string {
 
 export function getProductMedia(product: Product): ProductMediaSlide[] {
   const mainPhoto = getProductPhotoUrl(product.image, product.customImageUrl)
-  const gallery = getProductGalleryPhotoUrls(product.image, product.customImageUrl)
+  const gallery =
+    product.galleryImageUrls && product.galleryImageUrls.length > 0
+      ? product.galleryImageUrls
+      : getProductGalleryPhotoUrls(product.image, product.customImageUrl)
   const slides: ProductMediaSlide[] = [
     {
       id: `${product.id}-main`,
@@ -90,9 +93,9 @@ export function getProductMedia(product: Product): ProductMediaSlide[] {
     slides.push({
       id: `${product.id}-gallery-${index + 1}`,
       type: 'gallery',
-      label: `轮播 ${index + 1}`,
+      label: `详情 ${index + 1}`,
       src: url,
-      alt: `${product.name} 场景图 ${index + 1}`,
+      alt: `${product.name} 详情图 ${index + 1}`,
     })
   })
 

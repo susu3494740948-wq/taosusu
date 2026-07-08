@@ -26,6 +26,10 @@ export interface Product {
   shippingNote: string
   /** Data URL or remote URL for user-uploaded product photos */
   customImageUrl?: string
+  /** Extra detail/gallery image URLs for the product page carousel */
+  galleryImageUrls?: string[]
+  /** Optional source note, e.g. supplier sheet or platform listing reference */
+  sourceNote?: string
 }
 
 export interface CartItem {

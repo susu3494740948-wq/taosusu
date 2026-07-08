@@ -1,0 +1,58 @@
+{
+  "products": [
+    {
+      "sku": "TTS-2026-001",
+      "name": "Portable Neck Fan Pro",
+      "category": "Summer Comfort",
+      "price": 19.99,
+      "compareAtPrice": 29.99,
+      "stock": 120,
+      "badge": "New Arrival",
+      "mainImageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80",
+      "detailImageUrls": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80"
+      ],
+      "description": "Hands-free neck fan for summer travel, commuting, and outdoor events.",
+      "tags": ["summer", "travel", "outdoor"],
+      "benefits": [
+        "Hands-free neck wear",
+        "USB-C rechargeable battery",
+        "3 speed modes with quiet airflow"
+      ],
+      "details": [
+        "Bladeless neck design",
+        "USB-C cable included",
+        "Approx. 4 hours runtime on medium speed"
+      ],
+      "shippingNote": "Processing 2-5 business days. Estimated US delivery 7-12 business days after dispatch.",
+      "sourceNote": "Supplier sheet / TikTok Shop listing reference"
+    },
+    {
+      "sku": "TTS-2026-002",
+      "name": "Pet Hair Remover Roller",
+      "category": "Pet Cleaning",
+      "price": 14.5,
+      "compareAtPrice": 22,
+      "stock": 80,
+      "badge": "Best Seller",
+      "mainImageUrl": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=900&q=80",
+      "detailImageUrls": [
+        "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=80"
+      ],
+      "description": "Reusable lint roller for sofas, car seats, and pet beds.",
+      "tags": ["pet", "cleaning"],
+      "benefits": [
+        "Reusable roller with washable surface",
+        "Works on fabric, carpet, and upholstery",
+        "Compact size for travel"
+      ],
+      "details": [
+        "ABS shell with silicone grip",
+        "Includes cleaning brush",
+        "No refills required"
+      ],
+      "sourceNote": "Shopee supplier listing reference"
+    }
+  ]
+}

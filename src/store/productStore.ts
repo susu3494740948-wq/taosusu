@@ -14,6 +14,7 @@ interface ProductState {
   loadFromCloud: () => Promise<void>
   addProduct: (product: Product) => Promise<void>
   updateProduct: (product: Product) => Promise<void>
+  importProducts: (products: Product[]) => Promise<{ imported: number }>
   removeProduct: (productId: string) => Promise<void>
   delistProduct: (productId: string) => void
   relistProduct: (productId: string) => void
@@ -78,6 +79,18 @@ export const useProductStore = create<ProductState>()(
         set({ customProducts, delistedProductIds })
         const syncError = await pushToCloud(customProducts)
         set({ cloudSyncError: syncError })
+      },
+
+      importProducts: async (products) => {
+        const byId = new Map(get().customProducts.map((item) => [item.id, item]))
+        products.forEach((product) => byId.set(product.id, product))
+        const customProducts = sortProducts([...byId.values()])
+        const importedIds = new Set(products.map((product) => product.id))
+        const delistedProductIds = get().delistedProductIds.filter((id) => !importedIds.has(id))
+        set({ customProducts, delistedProductIds })
+        const syncError = await pushToCloud(customProducts)
+        set({ cloudSyncError: syncError })
+        return { imported: products.length }
       },
 
       removeProduct: async (productId) => {
