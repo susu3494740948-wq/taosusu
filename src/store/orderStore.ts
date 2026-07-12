@@ -1,15 +1,30 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { demoOrders } from '../data/demoOrders'
-import { enrichPaidOrder, enrichPlacedOrder } from '../lib/orderLogistics'
+import { fetchCloudOrdersResult, syncOrdersToGitHub } from '../lib/cloudOrders'
+import {
+  appendLogisticsEvent,
+  applyOrderStatus,
+  enrichPaidOrder,
+  enrichPlacedOrder,
+  mergeOrderLists,
+  updateTrackingInfo,
+} from '../lib/orderLogistics'
 import type { OrderFilter } from '../lib/orderLabels'
-import type { Order } from '../types'
+import { usePreferencesStore } from './preferencesStore'
+import type { Order, OrderStatus } from '../types'
 
 interface OrderState {
   orders: Order[]
+  cloudLoaded: boolean
+  cloudSyncError: string | null
+  loadFromCloud: () => Promise<void>
   addOrder: (order: Order) => void
   payOrder: (orderId: string) => void
   cancelOrder: (orderId: string) => void
+  setOrderStatus: (orderId: string, status: OrderStatus) => void
+  addLogisticsEvent: (orderId: string, location: string, description: string) => void
+  updateTracking: (orderId: string, carrier: string, trackingNumber: string) => void
 }
 
 function sortOrders(orders: Order[]): Order[] {
@@ -38,36 +53,84 @@ export function countOrders(orders: Order[]): Record<OrderFilter, number> {
   }
 }
 
+async function pushToCloud(orders: Order[]): Promise<string | null> {
+  const token = usePreferencesStore.getState().githubSyncToken
+  if (!token.trim()) return null
+
+  try {
+    await syncOrdersToGitHub(orders, token)
+    return null
+  } catch {
+    return '订单云端同步失败，请检查 GitHub Token 是否正确。'
+  }
+}
+
 export const useOrderStore = create<OrderState>()(
   persist(
-    (set) => ({
-      orders: sortOrders(demoOrders),
+    (set, get) => {
+      const commit = (orders: Order[]) => {
+        const sorted = sortOrders(orders)
+        set({ orders: sorted })
+        void pushToCloud(sorted).then((syncError) => set({ cloudSyncError: syncError }))
+      }
 
-      addOrder: (order) =>
-        set((state) => ({
-          orders: sortOrders([enrichPlacedOrder(order), ...state.orders.filter((item) => item.id !== order.id)]),
-        })),
+      return {
+        orders: sortOrders(demoOrders),
+        cloudLoaded: false,
+        cloudSyncError: null,
 
-      payOrder: (orderId) =>
-        set((state) => ({
-          orders: sortOrders(
-            state.orders.map((order) =>
+        loadFromCloud: async () => {
+          const result = await fetchCloudOrdersResult()
+          if (result.ok && result.orders.length > 0) {
+            set({
+              orders: sortOrders(mergeOrderLists(get().orders, result.orders)),
+              cloudLoaded: true,
+              cloudSyncError: null,
+            })
+            return
+          }
+          set({ cloudLoaded: true })
+        },
+
+        addOrder: (order) =>
+          commit([enrichPlacedOrder(order), ...get().orders.filter((item) => item.id !== order.id)]),
+
+        payOrder: (orderId) =>
+          commit(
+            get().orders.map((order) =>
               order.id === orderId && order.paymentStatus === 'unpaid' ? enrichPaidOrder(order) : order,
             ),
           ),
-        })),
 
-      cancelOrder: (orderId) =>
-        set((state) => ({
-          orders: sortOrders(
-            state.orders.map((order) =>
+        cancelOrder: (orderId) =>
+          commit(
+            get().orders.map((order) =>
               order.id === orderId && order.paymentStatus === 'unpaid'
-                ? { ...order, status: 'cancelled' as const }
+                ? { ...order, status: 'cancelled' as const, updatedAt: new Date().toISOString() }
                 : order,
             ),
           ),
-        })),
-    }),
+
+        setOrderStatus: (orderId, status) =>
+          commit(
+            get().orders.map((order) => (order.id === orderId ? applyOrderStatus(order, status) : order)),
+          ),
+
+        addLogisticsEvent: (orderId, location, description) =>
+          commit(
+            get().orders.map((order) =>
+              order.id === orderId ? appendLogisticsEvent(order, location, description) : order,
+            ),
+          ),
+
+        updateTracking: (orderId, carrier, trackingNumber) =>
+          commit(
+            get().orders.map((order) =>
+              order.id === orderId ? updateTrackingInfo(order, carrier, trackingNumber) : order,
+            ),
+          ),
+      }
+    },
     {
       name: 'taosusu-orders',
       storage: createJSONStorage(() => localStorage),

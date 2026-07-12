@@ -47,6 +47,7 @@ interface AdminDashboardPageProps {
   onNavigateSiteContent: () => void
   onNavigateBlog: () => void
   onNavigateBlogView: () => void
+  onNavigateOrders: () => void
   catalogCount: number
 }
 
@@ -55,6 +56,7 @@ export function AdminDashboardPage({
   onNavigateSiteContent,
   onNavigateBlog,
   onNavigateBlogView,
+  onNavigateOrders,
   catalogCount,
 }: AdminDashboardPageProps) {
   const [activePlatform, setActivePlatform] = useState<PlatformId | 'all'>('all')
@@ -138,6 +140,13 @@ export function AdminDashboardPage({
           </button>
           <button
             type="button"
+            onClick={onNavigateOrders}
+            className="rounded-full bg-sky-400 px-6 py-3 text-sm font-black text-stone-950 transition hover:bg-sky-300"
+          >
+            订单与物流 →
+          </button>
+          <button
+            type="button"
             onClick={onNavigateSiteContent}
             className="rounded-full border border-white/20 px-6 py-3 text-sm font-black text-white transition hover:bg-white/10"
           >
@@ -160,7 +169,7 @@ export function AdminDashboardPage({
         </div>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {[
           ['在售 SKU', String(summary.activeSkus)],
           ['库存总量', `${summary.totalStockUnits} 件`],
@@ -171,9 +180,9 @@ export function AdminDashboardPage({
           ['低库存 SKU', String(summary.lowStockCount)],
           ['广告花费', formatCurrency(displayAdSpend)],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-3xl border border-stone-200 bg-white p-5">
-            <p className="text-sm font-bold uppercase tracking-[0.15em] text-stone-500">{label}</p>
-            <p className="mt-3 text-2xl font-black text-stone-950">{value}</p>
+          <div key={label} className="rounded-3xl border border-stone-200 bg-white p-4 sm:p-5">
+            <p className="text-xs font-bold uppercase tracking-[0.15em] text-stone-500 sm:text-sm">{label}</p>
+            <p className="mt-2 text-xl font-black text-stone-950 sm:mt-3 sm:text-2xl">{value}</p>
           </div>
         ))}
       </section>
@@ -330,7 +339,23 @@ export function AdminDashboardPage({
             <h3 className="mt-2 text-2xl font-black text-stone-950">Hero SKU 测试信号</h3>
           </div>
         </div>
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6 space-y-3 md:hidden">
+          {heroSkuSignals.map((item) => (
+            <article key={item.sku} className="rounded-2xl bg-stone-100 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-bold text-stone-950">{item.sku}</p>
+                <span
+                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${decisionStyles[item.decision as keyof typeof decisionStyles]}`}
+                >
+                  {item.decision}
+                </span>
+              </div>
+              <p className="mt-2 text-sm text-stone-700">{item.signal}</p>
+              <p className="mt-1 text-sm leading-6 text-stone-600">{item.note}</p>
+            </article>
+          ))}
+        </div>
+        <div className="mt-6 hidden overflow-x-auto md:block">
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="border-b border-stone-200 text-stone-500">
@@ -368,7 +393,57 @@ export function AdminDashboardPage({
             平均评分 {summary.averageRating.toFixed(1)} · 平均售价 {formatCurrency(summary.averagePrice)}
           </p>
         </div>
-        <div className="mt-6 overflow-x-auto">
+        <div className="mt-6 space-y-3 lg:hidden">
+          {sortedProducts.map((product) => {
+            const status = getSkuOperationalStatus(product.stock)
+            const delisted = isProductDelisted(product.id, delistedProductIds)
+            return (
+              <article
+                key={product.id}
+                className={`rounded-2xl bg-stone-100 p-4 ${delisted ? 'opacity-75' : ''}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-bold leading-snug text-stone-950">{product.name}</p>
+                  <p className="shrink-0 font-black text-stone-950">{formatCurrency(product.price)}</p>
+                </div>
+                <p className="mt-1.5 text-xs leading-5 text-stone-600">
+                  {product.category} · 库存 {product.stock} · 评分 {product.rating}（{product.reviewCount}）
+                  {product.badge ? ` · ${product.badge}` : ''}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className={`rounded-full px-3 py-1 text-xs font-black ${statusStyles[status].className}`}>
+                    {statusStyles[status].label}
+                  </span>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-black ${
+                      delisted ? 'bg-stone-200 text-stone-600' : 'bg-emerald-100 text-emerald-800'
+                    }`}
+                  >
+                    {delisted ? '已下架' : '在售'}
+                  </span>
+                  {delisted ? (
+                    <button
+                      type="button"
+                      onClick={() => relistProduct(product.id)}
+                      className="ml-auto rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-black text-emerald-800 transition hover:bg-emerald-200"
+                    >
+                      重新上架
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => delistProduct(product.id)}
+                      className="ml-auto rounded-full bg-red-50 px-3 py-1.5 text-xs font-black text-red-700 transition hover:bg-red-100"
+                    >
+                      下架
+                    </button>
+                  )}
+                </div>
+              </article>
+            )
+          })}
+        </div>
+        <div className="mt-6 hidden overflow-x-auto lg:block">
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="border-b border-stone-200 text-stone-500">

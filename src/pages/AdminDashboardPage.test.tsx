@@ -16,6 +16,7 @@ describe('AdminDashboardPage', () => {
         onNavigateSiteContent={() => {}}
         onNavigateBlog={() => {}}
         onNavigateBlogView={() => {}}
+        onNavigateOrders={() => {}}
         catalogCount={31}
       />,
     )
@@ -26,6 +27,7 @@ describe('AdminDashboardPage', () => {
     expect(screen.getByText(/Go \/ Pivot \/ Stop：Pivot/)).toBeInTheDocument()
     expect(screen.getByText('本周运营动作')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '商品上架 →' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '订单与物流 →' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '编辑站点内容 →' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '发布顾客博客 →' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '查看顾客博客 →' })).toBeInTheDocument()
@@ -41,6 +43,7 @@ describe('AdminDashboardPage', () => {
         onNavigateSiteContent={() => {}}
         onNavigateBlog={() => {}}
         onNavigateBlogView={() => {}}
+        onNavigateOrders={() => {}}
         catalogCount={baseProducts.length}
       />,
     )
@@ -55,7 +58,8 @@ describe('AdminDashboardPage', () => {
     expect(useProductStore.getState().delistedProductIds).toContain(target.id)
     expect(screen.getByText('已下架：1')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: '重新上架' }))
+    // 手机端卡片和桌面端表格各渲染一个重新上架按钮，点击任意一个即可
+    fireEvent.click(screen.getAllByRole('button', { name: '重新上架' })[0])
     expect(useProductStore.getState().delistedProductIds).not.toContain(target.id)
   })
 })

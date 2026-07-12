@@ -3,6 +3,7 @@ import { BlogPostMedia } from '../components/blog/BlogPostMedia'
 import { blogTypeLabels, defaultBlogPosts, type BlogPost, type BlogPostType } from '../data/blogDefaults'
 import { selectStoreConfig, useSiteContentStore } from '../store/siteContentStore'
 import { useBlogStore } from '../store/blogStore'
+import { useRoleStore } from '../store/roleStore'
 import { theme } from '../lib/themeClasses'
 
 type BlogFilter = 'all' | BlogPostType
@@ -40,6 +41,7 @@ interface CustomerBlogPageProps {
 export function CustomerBlogPage({ onNavigateEditor, onViewProduct }: CustomerBlogPageProps) {
   const storeConfig = useSiteContentStore(selectStoreConfig)
   const posts = useBlogStore((state) => state.posts)
+  const role = useRoleStore((state) => state.role)
   const [activeFilter, setActiveFilter] = useState<BlogFilter>('all')
 
   const displayPosts = useMemo(() => {
@@ -57,13 +59,15 @@ export function CustomerBlogPage({ onNavigateEditor, onViewProduct }: CustomerBl
         <p className={theme.pageSubtitle}>
           真实买家分享图文、视频与商品评价。支持运营后台发布图片动态、开箱视频和单品测评。
         </p>
-        <button
-          type="button"
-          onClick={onNavigateEditor}
-          className={`mt-6 min-h-11 rounded-full px-6 py-3 text-sm font-bold ${theme.primaryBtn}`}
-        >
-          发布博客内容 →
-        </button>
+        {role === 'merchant' ? (
+          <button
+            type="button"
+            onClick={onNavigateEditor}
+            className={`mt-6 min-h-11 rounded-full px-6 py-3 text-sm font-bold ${theme.primaryBtn}`}
+          >
+            发布博客内容 →
+          </button>
+        ) : null}
       </section>
 
       <section className={`mt-6 rounded-[2rem] p-5 sm:p-6 ${theme.surface} ${theme.border} border`}>

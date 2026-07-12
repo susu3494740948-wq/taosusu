@@ -11,6 +11,7 @@ import { useCartStore } from './store/cartStore'
 import { useOrderStore } from './store/orderStore'
 import { usePreferencesStore } from './store/preferencesStore'
 import { useProductStore } from './store/productStore'
+import { useRoleStore, type ViewRole } from './store/roleStore'
 import { useSiteContentStore } from './store/siteContentStore'
 import type { Category, Order, Product } from './types'
 import { HomePage } from './pages/HomePage'
@@ -51,6 +52,9 @@ const BlogEditorPage = lazy(() =>
 const PortfolioCasePage = lazy(() =>
   import('./pages/PortfolioCasePage').then((m) => ({ default: m.PortfolioCasePage })),
 )
+const MerchantOrdersPage = lazy(() =>
+  import('./pages/MerchantOrdersPage').then((m) => ({ default: m.MerchantOrdersPage })),
+)
 
 function PageLoader() {
   return (
@@ -76,6 +80,10 @@ type Page =
   | 'reviews'
   | 'settings'
   | 'account'
+  | 'merchant-orders'
+
+/** 仅商家模式可见的页面，切回顾客视图时会自动跳转首页 */
+const merchantOnlyPages: Page[] = ['admin', 'upload', 'site-content', 'blog-editor', 'merchant-orders']
 
 export default function App() {
   const addItem = useCartStore((state) => state.addItem)
@@ -87,6 +95,8 @@ export default function App() {
   const savedPromoCode = usePreferencesStore((state) => state.savedPromoCode)
   const customProducts = useProductStore((state) => state.customProducts)
   const delistedProductIds = useProductStore((state) => state.delistedProductIds)
+  const role = useRoleStore((state) => state.role)
+  const setRole = useRoleStore((state) => state.setRole)
   const catalogProducts = useMemo(
     () => mergeCatalogProducts(customProducts, delistedProductIds),
     [customProducts, delistedProductIds],
@@ -113,6 +123,7 @@ export default function App() {
     void useSiteContentStore.getState().loadFromCloud()
     void usePreferencesStore.getState().loadFromCloud()
     void useBlogStore.getState().loadFromCloud()
+    void useOrderStore.getState().loadFromCloud()
   }, [])
 
   useEffect(() => {
@@ -131,6 +142,7 @@ export default function App() {
       reviews: '最新评论 · 淘酥酥',
       settings: '设置 · 淘酥酥',
       account: '我的订单 · 淘酥酥',
+      'merchant-orders': '订单与物流管理 · 淘酥酥',
     }
     document.title = pageTitles[page]
   }, [page, selectedProduct.name])
@@ -148,6 +160,17 @@ export default function App() {
   function navigate(nextPage: Page) {
     setPage(nextPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function switchRole(nextRole: ViewRole) {
+    setRole(nextRole)
+    if (nextRole === 'merchant') {
+      navigate('admin')
+      return
+    }
+    if (merchantOnlyPages.includes(page)) {
+      navigate('home')
+    }
   }
 
   function selectProduct(productId: string) {
@@ -234,6 +257,7 @@ export default function App() {
           onNavigateSiteContent={() => navigate('site-content')}
           onNavigateBlog={() => navigate('blog-editor')}
           onNavigateBlogView={() => navigate('blog')}
+          onNavigateOrders={() => navigate('merchant-orders')}
           catalogCount={catalogProducts.length}
         />
       )
@@ -274,6 +298,9 @@ export default function App() {
     if (page === 'account') {
       return <UserAccountPage onNavigateShop={() => navigate('home')} onSelectProduct={selectProduct} />
     }
+    if (page === 'merchant-orders') {
+      return <MerchantOrdersPage onNavigateAdmin={() => navigate('admin')} />
+    }
     if (page === 'portfolio') {
       return (
         <PortfolioCasePage
@@ -299,18 +326,21 @@ export default function App() {
     <div className={theme.page}>
       <Header
         currentPage={page}
+        role={role}
         products={catalogProducts}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onSearchSubmit={submitSearch}
         onSelectProduct={selectProduct}
         onNavigate={(nextPage) => navigate(nextPage)}
+        onSwitchRole={switchRole}
         onOpenCart={() => setCartOpen(true)}
       />
       <Suspense fallback={<PageLoader />}>{renderPage()}</Suspense>
       {showMobileNav ? (
         <MobileBottomNav
           currentPage={page}
+          role={role}
           onNavigate={(nextPage) => navigate(nextPage)}
           onOpenCart={() => setCartOpen(true)}
         />

@@ -61,6 +61,8 @@ export interface LogisticsEvent {
   location: string
   description: string
   completed: boolean
+  /** 商家手动添加的物流节点，推进订单状态时会被保留 */
+  custom?: boolean
 }
 
 export interface OrderLogistics {
@@ -81,5 +83,7 @@ export interface Order {
   paymentStatus: PaymentStatus
   status: OrderStatus
   paidAt?: string
+  /** 最近一次状态/物流变更时间，云端合并时新者优先 */
+  updatedAt?: string
   logistics?: OrderLogistics
 }
