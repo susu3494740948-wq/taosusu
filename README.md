@@ -43,6 +43,36 @@ npm run test     # Vitest 单元测试
 npm run preview  # 预览构建产物
 ```
 
+## 线上线下自动同步
+
+线上站点由 GitHub Pages 承载，推送到 `main` 分支即自动测试、构建、部署（见 `.github/workflows/deploy-pages.yml`）。本地改完代码后有三种同步方式：
+
+### 方式一：常驻自动同步（推荐）
+
+```bash
+npm run sync
+```
+
+或双击 **`scripts/sync-live.bat`**。窗口保持开启期间，任何文件保存后约 5-10 秒会自动提交并推送，线上站点 1-3 分钟内更新。按 `Ctrl+C` 停止。
+
+### 方式二：手动一次性同步
+
+```bash
+npm run sync:once
+```
+
+把当前所有本地修改一次性提交并推送上线。
+
+### 方式三：带本地测试的部署
+
+双击 **`scripts/deploy-live.bat`**，先在本地跑测试和构建，全部通过后再推送。
+
+说明：
+
+- 推送后由 GitHub Actions 先跑测试再部署，测试不过线上不会更新，保持上一个正常版本。
+- `docs/` 目录已加入 `.gitignore`，个人笔记不会被同步到公开仓库。
+- 若推送失败（网络问题），监听模式会自动重试；也可开 VPN 后再执行 `npm run sync:once`。
+
 ## 免费发布（给别人观赏，无需盈利）
 
 ### 最快：Netlify 拖拽上线（约 1 分钟，不用 Git）

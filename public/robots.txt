@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://susu3494740948-wq.github.io/taosusu/sitemap.xml

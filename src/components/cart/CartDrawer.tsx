@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { calculateCartSummary, validateDiscountCode } from '../../lib/pricing'
 import { formatCurrency } from '../../lib/formatters'
 import { theme } from '../../lib/themeClasses'
@@ -23,6 +24,15 @@ export function CartDrawer({ open, onClose, onCheckout }: CartDrawerProps) {
   )
   const discountMessage = validateDiscountCode(discountCode)
 
+  useEffect(() => {
+    if (!open) return
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [open, onClose])
+
   if (!open) return null
 
   return (
@@ -34,6 +44,9 @@ export function CartDrawer({ open, onClose, onCheckout }: CartDrawerProps) {
         onClick={onClose}
       />
       <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label="购物车"
         className={`absolute right-0 top-0 flex h-[100dvh] max-h-[100dvh] w-full max-w-md flex-col p-3 shadow-2xl sm:p-6 ${theme.surface}`}
         style={{
           paddingTop: 'max(0.75rem, env(safe-area-inset-top))',

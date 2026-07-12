@@ -107,6 +107,8 @@ export function HomePage({
           src={heroImageUrl}
           alt="淘酥酥跨境生活方式独立站"
           className="absolute inset-0 h-full w-full object-cover"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/95 via-stone-950/80 to-stone-950/50" />
         <div className="relative mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20">

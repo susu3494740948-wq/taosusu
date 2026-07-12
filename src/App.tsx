@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { CartDrawer } from './components/cart/CartDrawer'
 import { Header } from './components/layout/Header'
 import { MobileBottomNav } from './components/layout/MobileBottomNav'
@@ -13,21 +13,53 @@ import { usePreferencesStore } from './store/preferencesStore'
 import { useProductStore } from './store/productStore'
 import { useSiteContentStore } from './store/siteContentStore'
 import type { Category, Order, Product } from './types'
-import { AdminDashboardPage } from './pages/AdminDashboardPage'
-import { CategoryPage } from './pages/CategoryPage'
-import { RecentReviewsPage } from './pages/RecentReviewsPage'
-import { CheckoutPage } from './pages/CheckoutPage'
 import { HomePage } from './pages/HomePage'
-import { OrderSuccessPage } from './pages/OrderSuccessPage'
-import { ProductDetailPage } from './pages/ProductDetailPage'
-import { SettingsPage } from './pages/SettingsPage'
-import { SiteContentPage } from './pages/SiteContentPage'
-import { UploadProductPage } from './pages/UploadProductPage'
-import { UserAccountPage } from './pages/UserAccountPage'
-import { CustomerBlogPage } from './pages/CustomerBlogPage'
-import { BlogEditorPage } from './pages/BlogEditorPage'
-import { PortfolioCasePage } from './pages/PortfolioCasePage'
 import { useBlogStore } from './store/blogStore'
+
+// 页面级代码分割:首页保持同步加载,其余页面按需加载,
+// 让 recharts(仅运营中心使用)等重依赖不进入首屏 bundle。
+const AdminDashboardPage = lazy(() =>
+  import('./pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })),
+)
+const CategoryPage = lazy(() => import('./pages/CategoryPage').then((m) => ({ default: m.CategoryPage })))
+const RecentReviewsPage = lazy(() =>
+  import('./pages/RecentReviewsPage').then((m) => ({ default: m.RecentReviewsPage })),
+)
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage })))
+const OrderSuccessPage = lazy(() =>
+  import('./pages/OrderSuccessPage').then((m) => ({ default: m.OrderSuccessPage })),
+)
+const ProductDetailPage = lazy(() =>
+  import('./pages/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })),
+)
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
+const SiteContentPage = lazy(() =>
+  import('./pages/SiteContentPage').then((m) => ({ default: m.SiteContentPage })),
+)
+const UploadProductPage = lazy(() =>
+  import('./pages/UploadProductPage').then((m) => ({ default: m.UploadProductPage })),
+)
+const UserAccountPage = lazy(() =>
+  import('./pages/UserAccountPage').then((m) => ({ default: m.UserAccountPage })),
+)
+const CustomerBlogPage = lazy(() =>
+  import('./pages/CustomerBlogPage').then((m) => ({ default: m.CustomerBlogPage })),
+)
+const BlogEditorPage = lazy(() =>
+  import('./pages/BlogEditorPage').then((m) => ({ default: m.BlogEditorPage })),
+)
+const PortfolioCasePage = lazy(() =>
+  import('./pages/PortfolioCasePage').then((m) => ({ default: m.PortfolioCasePage })),
+)
+
+function PageLoader() {
+  return (
+    <main className="flex min-h-[50vh] items-center justify-center" aria-busy="true">
+      <span className="h-8 w-8 animate-spin rounded-full border-2 border-stone-300 border-t-[var(--accent)]" />
+      <span className="sr-only">页面加载中</span>
+    </main>
+  )
+}
 
 type Page =
   | 'home'
@@ -82,6 +114,26 @@ export default function App() {
     void usePreferencesStore.getState().loadFromCloud()
     void useBlogStore.getState().loadFromCloud()
   }, [])
+
+  useEffect(() => {
+    const pageTitles: Record<Page, string> = {
+      home: '淘酥酥 · 跨境电商独立站',
+      portfolio: '作品集 · 淘酥酥',
+      categories: '商品分类 · 淘酥酥',
+      detail: `${selectedProduct.name} · 淘酥酥`,
+      checkout: '结账 · 淘酥酥',
+      success: '订单确认 · 淘酥酥',
+      admin: '运营中心 · 淘酥酥',
+      upload: '上传商品 · 淘酥酥',
+      'site-content': '站点内容 · 淘酥酥',
+      blog: '顾客博客 · 淘酥酥',
+      'blog-editor': '博客编辑 · 淘酥酥',
+      reviews: '最新评论 · 淘酥酥',
+      settings: '设置 · 淘酥酥',
+      account: '我的订单 · 淘酥酥',
+    }
+    document.title = pageTitles[page]
+  }, [page, selectedProduct.name])
 
   useEffect(() => {
     setShippingMethod(defaultShippingMethod)
@@ -255,7 +307,7 @@ export default function App() {
         onNavigate={(nextPage) => navigate(nextPage)}
         onOpenCart={() => setCartOpen(true)}
       />
-      {renderPage()}
+      <Suspense fallback={<PageLoader />}>{renderPage()}</Suspense>
       {showMobileNav ? (
         <MobileBottomNav
           currentPage={page}
