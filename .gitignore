@@ -15,6 +15,11 @@ dist-ssr
 # Personal notes, never published to the public repo by auto-sync
 docs/
 
+# Local debug/probe artifacts
+scripts/mobile-shots/
+scripts/mobile-probe*.mjs
+scripts/mobile-screenshots.mjs
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

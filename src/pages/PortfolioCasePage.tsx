@@ -85,11 +85,11 @@ export function PortfolioCasePage({
         </div>
       </section>
 
-      <section className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+      <section className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-6">
         {portfolioSummary.capabilities.map((capability) => (
-          <div key={capability} className="rounded-3xl border border-stone-200 bg-white p-5">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-stone-500">Capability</p>
-            <h3 className="mt-2 text-lg font-black text-stone-950">{capability}</h3>
+          <div key={capability} className="rounded-3xl border border-stone-200 bg-white p-4 sm:p-5">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500 sm:text-sm">Capability</p>
+            <h3 className="mt-2 text-base font-black text-stone-950 sm:text-lg">{capability}</h3>
           </div>
         ))}
       </section>
